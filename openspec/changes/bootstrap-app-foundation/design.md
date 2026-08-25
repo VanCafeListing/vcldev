@@ -45,7 +45,6 @@ There's only one app and a backend-as-a-service (no separate backend server pack
 
 ## Risks / Trade-offs
 
-- [Risk] React Native/Expo was the assistant's recommendation, not yet explicitly confirmed by the user → Mitigation: this change only builds foundation/scaffolding, no feature work depends on it yet, so redirecting to Flutter later is still cheap if the user objects.
 - [Risk] PostGIS adds schema/extension complexity vs. plain lat/lng → Mitigation: it's a single `create extension` call on Supabase and pays for itself once cafe volume makes accurate/indexed proximity queries matter.
 - [Risk] Hand-rolled design system is more upfront work than adopting a kit → Mitigation: the primitive surface is small and fixed by the mockups; precision to the supplied design outweighs kit convenience here.
 - [Risk] Client holds the Supabase anon key (standard practice) — safety depends entirely on RLS being correct → Mitigation: the `data-model` spec requires an explicit RLS policy per table; these get reviewed before archive.

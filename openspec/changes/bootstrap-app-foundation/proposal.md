@@ -4,7 +4,7 @@ The repo is currently empty except for a README. We now have a complete design s
 
 ## What Changes
 
-- Initialize a React Native + Expo (TypeScript) app in the repo (`app/`), with navigation, linting, and env config wired up. **Assumption**: React Native/Expo was picked over Flutter as the recommended tradeoff (shared TypeScript with Supabase, mature `supabase-js`/EAS tooling); not yet explicitly confirmed by the user.
+- Initialize a React Native + Expo (TypeScript) app in the repo (`app/`), with navigation, linting, and env config wired up. React Native/Expo was chosen over Flutter — shared TypeScript with Supabase, mature `supabase-js`/EAS tooling — and confirmed by the user.
 - Extract and commit the design system into the codebase: the logo (SVG, converted from the supplied `.ai`), the Lato font, the two confirmed color scales ("Beer Glazed Bacon" brand brown, and the amber/accent 0–10 scale), and a themed UI primitive set (buttons, inputs, cards, badges, bottom nav) styled to match the mockup screens.
 - Build the navigation shell matching the mockup's screens: an auth stack (Splash → Sign up / Log in / Guest) and a main tab shell (Home, Search, Map, Profile) — screens themselves scaffolded as empty/placeholder content, not implemented yet.
 - Provision the Supabase backend: project schema for `profiles`, `cafes` (with geo columns + structured amenity/attribute columns so filters are queryable), `favourites` (user↔cafe join), a Storage bucket for cafe photos, and RLS policies so users only manage their own profile/favourites.

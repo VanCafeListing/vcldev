@@ -11,11 +11,10 @@ context: |
   Tech stack (confirmed):
     - Backend: Supabase (Postgres + Auth + Storage + Edge Functions). A
       Supabase MCP is available in the dev environment for provisioning.
-    - Frontend: React Native with Expo, TypeScript. Chosen so app and
-      backend logic share one language, and for supabase-js/EAS tooling
-      maturity. This was the assistant's recommendation, not yet explicitly
-      confirmed by the user — flag it in any proposal that locks it in and
-      allow the user to redirect.
+    - Frontend: React Native with Expo, TypeScript. CONFIRMED by the user
+      on 2026-08-25 after weighing Flutter. Chosen so app and backend
+      logic share one language, and for supabase-js/EAS tooling maturity.
+      This is settled — do not re-open it or re-litigate Flutter.
     - Auth providers: email/password, Apple, Google, Facebook OAuth.
 
   Design system source: Figma-exported PDF ("App design.pdf") + an
