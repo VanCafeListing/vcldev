@@ -41,11 +41,15 @@ The button primitive SHALL support the four variants the design uses: primary (b
 - **THEN** it SHALL use the amber/accent scale token to indicate the active state, matching the mockup's badge styling
 
 ### Requirement: Logo renders from a vector asset
-The VanCafe monogram logo SHALL be available as a reusable vector asset so it renders crisply at any display size.
+The "VAN" monogram logo SHALL be available as a reusable vector asset so it renders crisply at any display size and can be tinted to match its background.
 
 #### Scenario: Splash screen renders the logo
 - **WHEN** the splash/landing screen renders the logo
 - **THEN** it SHALL render from a vector (SVG) source rather than a fixed-resolution raster image
+
+#### Scenario: Logo is tintable
+- **WHEN** the logo is rendered against the brand-brown splash background
+- **THEN** it SHALL render in the light tint the design specifies, rather than the source asset's hardcoded black
 
 ### Requirement: Single light theme is in scope
 The design system SHALL define one light theme. Dark mode is out of scope for this change.

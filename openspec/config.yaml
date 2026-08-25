@@ -19,10 +19,14 @@ context: |
     - Auth providers: email/password, Apple, Google, Facebook OAuth.
 
   Design system source: Figma-exported PDF ("App design.pdf") + an
-  Illustrator logo ("VanCafe_Logo.ai"), both supplied by the user. The
-  logo is an angular monogram (interlocking V-forms with a droplet/leaf
-  accent and a serif foot) — do NOT assert specific letterforms beyond
-  that; it has not been confirmed with the user. The .ai is
+  Illustrator logo ("VanCafe_Logo.ai"), both supplied by the user and
+  committed to the repo at design/source/ (App-design.pdf,
+  VanCafe_Logo.ai) as the project's source of truth.
+
+  The logo is a monogram spelling "VAN" (confirmed by the user): the V,
+  A and N are interlocked into a single angular mark with a serif foot,
+  plus a droplet/leaf accent at the upper right. Refer to it as the VAN
+  monogram — never "VLV" (an early misreading). The .ai is
   PDF-compatible and converts cleanly to SVG (3 vector paths, no rasters,
   ~3KB). Two caveats when importing it: the converted viewBox is the full
   792x612pt letter page with the logo small and centred (tighten it to

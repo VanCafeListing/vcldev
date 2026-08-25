@@ -7,7 +7,7 @@
 
 ## 2. Design System
 
-- [ ] 2.1 Convert and commit the logo as `design/logo/vancafe-logo.svg` (source: `VanCafe_Logo.ai`); tighten the viewBox from the full 792×612pt page to the logo's ink bounds, and make the paths tintable (`currentColor`) since the splash renders it light-on-brown
+- [ ] 2.1 Convert the "VAN" monogram to `design/logo/van-monogram.svg` (source: `design/source/VanCafe_Logo.ai`); tighten the viewBox from the full 792×612pt page to the logo's ink bounds, and make the paths tintable (`currentColor`) since the splash renders it light-on-brown
 - [ ] 2.2 Create `theme/tokens.ts` with the two confirmed color scales (Beer Glazed Bacon brown shade/tint, amber 0–10 accent) as named constants matching the recorded hex values exactly, plus the dark charcoal neutral (~#3A3A3A) used by Save/Edit/dialog-confirm buttons
 - [ ] 2.3 Add the Lato font (e.g. `@expo-google-fonts/lato`) with a system-font fallback while loading
 - [ ] 2.4 Build a `ThemeProvider` exposing color tokens, typography scale, and spacing scale

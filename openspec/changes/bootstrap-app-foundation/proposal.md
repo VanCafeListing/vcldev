@@ -22,6 +22,6 @@ None — this is a greenfield repo.
 
 ## Impact
 
-- New repo structure: `app/` (Expo project), `design/` (source-of-truth design assets: logo SVG, token files), and Supabase project config/migrations (location TBD in design.md — likely `supabase/migrations/`).
+- New repo structure: `app/` (Expo project), `design/logo/` (the converted, tintable VAN monogram SVG), and Supabase project config/migrations (location TBD in design.md — likely `supabase/migrations/`). The original design files are already committed at `design/source/` (`App-design.pdf`, `VanCafe_Logo.ai`) and are the source of truth for every token and screen.
 - No existing code or specs are affected (nothing exists yet).
-- Establishes the `design-system`, `app-shell`, and `data-model` capabilities that subsequent changes (`user-auth`, `cafe-discovery`, `cafe-filters`, `favourites`, `profile-settings`) will depend on and extend.
+- Establishes the `design-system`, `app-shell`, and `data-model` capabilities that subsequent changes (`user-auth`, `cafe-discovery`, `cafe-filters`, `cafe-map`, `favourites`, `profile-settings`) will depend on and extend.
