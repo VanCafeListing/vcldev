@@ -159,8 +159,15 @@ export const colors = {
   amenityWifi: figma.amenityWifi,
   amenityNeutral: neutral.placeholder,
 
-  /** Screen backgrounds. The hi-fi frames sit on off-white. */
+  /** Screen backgrounds. The hi-fi Figma frames sit on off-white. */
   background: figma.offWhite,
+
+  /**
+   * The auth screens come from the PDF, not the Figma Styleguide page, and
+   * sit on the palest brown tint rather than the off-white the Figma frames
+   * use. Sampled from the source: #f1eae7.
+   */
+  authBackground: brown.tint[90],
   surface: neutral.white,
   surfaceAlt: amber['0.5'],
 

@@ -12,7 +12,7 @@ import { ThemeProvider } from '@/theme';
  * have a session (or chose to browse as a guest).
  */
 function SessionRouter() {
-  const { ready, canEnterApp } = useSession();
+  const { ready, canEnterApp, isRecovering } = useSession();
   const segments = useSegments();
   const router = useRouter();
 
@@ -20,13 +20,22 @@ function SessionRouter() {
     if (!ready) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const onResetScreen = segments[1] === 'reset-password';
+
+    // A password-reset link produces a real session, but the user has to set a
+    // new password before going anywhere else — so this case is handled ahead
+    // of the ordinary signed-in routing below.
+    if (isRecovering) {
+      if (!onResetScreen) router.replace('/(auth)/reset-password');
+      return;
+    }
 
     if (!canEnterApp && !inAuthGroup) {
       router.replace('/(auth)/splash');
     } else if (canEnterApp && inAuthGroup) {
       router.replace('/(tabs)');
     }
-  }, [ready, canEnterApp, segments, router]);
+  }, [ready, canEnterApp, isRecovering, segments, router]);
 
   return <Slot />;
 }

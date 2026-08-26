@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
+import { ensureProfile } from './ensure-profile';
 import { supabase } from './supabase';
 
 type SessionState = {
@@ -11,6 +12,13 @@ type SessionState = {
   isGuest: boolean;
   /** Either signed in or browsing as a guest — i.e. allowed into the tabs. */
   canEnterApp: boolean;
+  /**
+   * True while the session came from a password-reset link. The session is
+   * real, but the user must set a new password before being let into the app.
+   */
+  isRecovering: boolean;
+  /** Called once the new password has been saved. */
+  finishRecovery: () => void;
   continueAsGuest: () => void;
   signOut: () => Promise<void>;
 };
@@ -21,6 +29,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [isRecovering, setIsRecovering] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -31,10 +40,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       setReady(true);
     });
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: subscription } = supabase.auth.onAuthStateChange((event, nextSession) => {
       setSession(nextSession);
+
+      // Opening a reset link establishes a real session. Flag it so routing
+      // sends the user to set a new password rather than into the app.
+      if (event === 'PASSWORD_RECOVERY') setIsRecovering(true);
       // Signing in supersedes guest mode.
-      if (nextSession) setIsGuest(false);
+      if (nextSession) {
+        setIsGuest(false);
+        // Fire-and-forget: repairs a missing profile row if the trigger never
+        // ran. Never awaited, so it cannot delay entering the app.
+        void ensureProfile(nextSession);
+      }
     });
 
     return () => {
@@ -48,16 +66,19 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       session,
       ready,
       isGuest,
-      canEnterApp: Boolean(session) || isGuest,
+      canEnterApp: (Boolean(session) && !isRecovering) || isGuest,
+      isRecovering,
+      finishRecovery: () => setIsRecovering(false),
       continueAsGuest: () => setIsGuest(true),
       signOut: async () => {
         // Clear guest mode too, so signing out always lands back on the
         // splash screen rather than leaving the tabs reachable.
         setIsGuest(false);
+        setIsRecovering(false);
         await supabase.auth.signOut();
       },
     }),
-    [session, ready, isGuest]
+    [session, ready, isGuest, isRecovering]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

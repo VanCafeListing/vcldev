@@ -22,6 +22,13 @@ export function authErrorMessage(error: unknown): string {
   // A dropped request surfaces as a TypeError from fetch, not an AuthError.
   if (error instanceof TypeError) return NETWORK;
 
+  // The sign-in Edge Function collapses every credential failure into this one
+  // code before it reaches the client, so there is nothing more specific to
+  // say — and deliberately so.
+  if (error instanceof Error && error.message === 'invalid_credentials') {
+    return INVALID_CREDENTIALS;
+  }
+
   if (error instanceof AuthError) {
     if (error.status === 0) return NETWORK;
 
