@@ -90,7 +90,7 @@ export default function SignUpScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.authBackground }]}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]}>
       {/* The splash sets a light status bar over its brown field; this screen is
           pale, so it needs the dark one back. */}
       <StatusBar style="dark" />

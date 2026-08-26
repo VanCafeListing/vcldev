@@ -19,23 +19,46 @@ context: |
 
   DESIGN SOURCE OF TRUTH — read this before any UI work:
 
-    1. PRIMARY: the hi-fi Figma file, "App Design"
-       fileKey 9JDdHP5R8xc1iShHq8nXQa, page "Styleguide" (70:2098).
-       Access it through the Figma MCP. Load the figma-design-to-code
-       skill BEFORE calling get_design_context (the tool requires it).
-       The finished frames on that page are:
-         70:2397  Home            (402x874)
-         81:2460  Home_1          (Home, alternate card treatment)
-         73:2412  Cafe detail     (frame is named "Home")
-         75:2474  Search_home
-         75:2531  Filter_popup    (402x819)
-       The user confirmed this page is the current design.
+    REVISED 2026-08-25 (user directive, supersedes the original Figma-
+    primary call below): design/source/App-design.pdf is now PRIMARY.
+    Where the PDF and the Figma Styleguide page both draw a screen, the
+    PDF wins — build to its exact colours, layout, and iconography, not
+    Figma's. This was triggered by the Home feed: the shipped Figma-
+    based version was visually unfaithful (wrong background tone, wrong
+    card treatment) next to the PDF's version of the same screen, which
+    turned out to be the more finished/intended design. Re-verify any
+    already-shipped screen against the PDF before trusting it, even if
+    it was previously checked off as "done" against Figma.
 
-    2. SECONDARY: design/source/App-design.pdf. This is an EARLIER
-       iteration. Use it only for screens the Styleguide page does not
-       cover — splash, sign up, profile menu, profile edit, and the
-       log-out / delete-account dialogs. Where the two disagree on a
-       screen both contain, Figma wins.
+    1. PRIMARY: design/source/App-design.pdf. Single page, 9 artboards
+       side by side (Splash, Home, Cafe detail, Filters, Sign up,
+       Profile menu, Delete-account dialog, Log-out dialog, Profile
+       edit) plus the two palette blocks and the "Font: Lato" label.
+       Render at high DPI to inspect precisely — text and vector edges
+       are crisp at 600dpi (`pdftoppm -r 600 -x -y -W -H ...` to crop a
+       single artboard; full-page coordinates come from a low-DPI
+       overview render first). Sample exact colours from the render
+       with a script (PIL `getcolors` on a small crop, filtered/sorted
+       by frequency) rather than eyeballing — see cafe-discovery's
+       Home/Cafe-detail rebuild for the pattern. Reuse an existing
+       token if a sampled value is within a few hex points of one
+       (PDF rasterization introduces antialiasing noise Figma's vector
+       fills don't have) — don't multiply near-duplicate tokens.
+
+    2. SECONDARY: the hi-fi Figma file, "App Design" (fileKey
+       9JDdHP5R8xc1iShHq8nXQa, page "Styleguide", 70:2098). Access via
+       the Figma MCP; load the figma-design-to-code skill BEFORE calling
+       get_design_context. Use it only for screens/details the PDF
+       doesn't cover: Search_home (75:2474), Filter_popup (75:2531,
+       402x819), and Log In (only on the wider board, node 1:2 — the PDF
+       has no log-in screen). The frames:
+         70:2397  Home            (402x874) — PDF has this screen too;
+                    PDF wins per the revision above
+         81:2460  Home_1          (Home, alternate card treatment)
+         73:2412  Cafe detail     (frame is named "Home") — PDF has
+                    this screen too; PDF wins per the revision above
+         75:2474  Search_home
+         75:2531  Filter_popup
 
     3. design/source/VanCafe_Logo.ai — the logo artwork.
 

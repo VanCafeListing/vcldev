@@ -89,9 +89,9 @@ export default function StyleGuideScreen() {
         <View style={{ gap: spacing.md }}>
           <Text style={heading}>Amenity badges</Text>
           <View style={{ flexDirection: 'row', gap: spacing.md }}>
-            <AmenityBadge label="Outlet" tone="outlet" />
-            <AmenityBadge label="Wifi" tone="wifi" />
-            <AmenityBadge label="seats" tone="neutral" count="24" />
+            <AmenityBadge label="Outlets" verified icon={<Icon name="Outlet" size={30} />} />
+            <AmenityBadge label="Wi-Fi" verified icon={<Icon name="Wifi" size={26} />} />
+            <AmenityBadge label="seats" count="20+" />
           </View>
         </View>
 
@@ -138,15 +138,18 @@ export default function StyleGuideScreen() {
         <Swatches title="Neutrals" entries={Object.entries(neutral)} />
 
         <View style={{ gap: spacing.md }}>
-          <Text style={heading}>Icons (exported from Figma)</Text>
+          <Text style={heading}>Icons (exported from the PDF / Figma)</Text>
           <View style={{ flexDirection: 'row', gap: spacing.lg, alignItems: 'center' }}>
-            <Icon name="TabHome" size={32} color={colors.tabIcon} />
-            <Icon name="TabSearch" size={32} color={colors.tabIcon} />
-            <Icon name="TabMap" size={32} color={colors.tabIcon} />
-            <Icon name="TabUser" size={32} color={colors.tabIcon} />
+            <Icon name="TabHome" size={32} color={colors.primary} />
+            <Icon name="TabSearch" size={32} color={colors.primary} />
+            <Icon name="TabMap" size={32} color={colors.primary} />
+            <Icon name="TabUser" size={32} color={colors.primary} />
             <Icon name="Heart" size={24} color={colors.text} />
             <Icon name="DotsFilled" size={24} color={colors.text} />
-            <Icon name="LocationPin" size={20} color={colors.card} />
+            <Icon name="LocationPin" size={20} color={colors.primary} />
+            <Icon name="Outlet" size={24} color={colors.text} />
+            <Icon name="Wifi" size={24} color={colors.text} />
+            <Icon name="Checkmark" size={20} color={colors.text} />
           </View>
         </View>
       </ScrollView>

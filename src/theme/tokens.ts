@@ -142,7 +142,12 @@ export const colors = {
   neutralAction: neutral.dark,
   onNeutralAction: neutral.white,
 
-  /** Cafe cards: brown body with off-white text laid over the photo. */
+  /**
+   * Legacy: the brown-body/off-white-text cafe card from the Figma
+   * Styleguide page. Superseded by the PDF's photo-with-overlay card
+   * treatment (see `cafe-card.tsx`) now that the PDF is the primary design
+   * source — kept only for `style-guide.tsx`'s catalog of sourced tokens.
+   */
   card: figma.cardBrown,
   onCard: figma.offWhite,
 
@@ -154,26 +159,25 @@ export const colors = {
   accent: figma.selected,
   onAccent: neutral.white,
 
-  /** Amenity tiles on the cafe detail screen. */
-  amenityOutlet: figma.amenityOutlet,
-  amenityWifi: figma.amenityWifi,
-  amenityNeutral: neutral.placeholder,
-
-  /** Screen backgrounds. The hi-fi Figma frames sit on off-white. */
-  background: figma.offWhite,
+  /**
+   * Amenity tiles on the cafe detail screen. The PDF uses the same amber
+   * background for all three (Outlets/Wifi/seat-count), with a matching
+   * amber "verified" checkmark badge overlapping the top-right corner of
+   * the first two — unlike the Figma Styleguide page's two distinct greens.
+   */
+  amenityTile: amber['2'],
+  amenityCheck: amber['5'],
 
   /**
-   * The auth screens come from the PDF, not the Figma Styleguide page, and
-   * sit on the palest brown tint rather than the off-white the Figma frames
-   * use. Sampled from the source: #f1eae7.
+   * Screen background. Sampled from the PDF's Home/Cafe-detail/auth/Splash
+   * artboards — #f1eae7, the palest step of the "Beer Glazed Bacon" tint
+   * scale. The PDF is the primary design source (see openspec/config.yaml);
+   * this replaced the Figma Styleguide page's off-white now that the pages
+   * built from Figma alone (Search, Filters) have no shipped screen yet.
    */
-  authBackground: brown.tint[90],
+  background: brown.tint[90],
   surface: neutral.white,
   surfaceAlt: amber['0.5'],
-
-  /** Bottom tab bar: cream with dark red-brown icons. */
-  tabBar: figma.tabBar,
-  tabIcon: figma.tabIcon,
 
   text: neutral.black,
   textMuted: neutral.muted,

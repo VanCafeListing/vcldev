@@ -18,9 +18,14 @@ import { getCafeById, type Cafe } from '@/lib/cafes';
 import { useFavouriteAction } from '@/lib/favourites';
 import { useTheme } from '@/theme';
 
-/** Figma (73:2412): hero photo, name + heart, address, description, amenities, map. */
-const HERO_HEIGHT = 198;
+/** PDF Cafe-detail artboard: hero photo, name + heart, address, distance
+ * ribbon, About, amenity tiles, Location map. */
+const HERO_HEIGHT = 220;
 const MAP_HEIGHT = 236;
+
+function formatDistance(meters: number): string {
+  return meters < 1000 ? `${Math.round(meters)}m` : `${(meters / 1000).toFixed(1)}km`;
+}
 
 function openInMaps(cafe: Cafe) {
   if (cafe.lat == null || cafe.lng == null) return;
@@ -53,17 +58,6 @@ export default function CafeDetailScreen() {
       </SafeAreaView>
     );
   }
-
-  const subtitle = [
-    cafe.address,
-    cafe.distance_meters != null
-      ? cafe.distance_meters < 1000
-        ? `${Math.round(cafe.distance_meters)}m`
-        : `${(cafe.distance_meters / 1000).toFixed(1)}km`
-      : null,
-  ]
-    .filter(Boolean)
-    .join(' · ');
 
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
@@ -126,53 +120,89 @@ export default function CafeDetailScreen() {
             >
               <Icon
                 name="Heart"
-                size={24}
-                color={isFavourited(cafe.id) ? colors.accent : colors.text}
+                size={22}
+                color={isFavourited(cafe.id) ? colors.primary : colors.text}
               />
             </Pressable>
           </View>
 
-          {subtitle ? (
+          {cafe.address ? (
             <View style={[styles.addressRow, { gap: spacing.xs, marginTop: spacing.sm }]}>
-              <Icon name="LocationPin" size={14} color={colors.text} />
+              <Icon name="LocationPin" size={14} color={colors.primary} />
               <Text
                 style={{
                   color: colors.text,
                   fontFamily: typography.family.regular,
                   fontSize: typography.size.md,
+                  flexShrink: 1,
                 }}
               >
-                {subtitle}
+                {cafe.address}
               </Text>
             </View>
           ) : null}
 
+          {cafe.distance_meters != null ? (
+            <View style={[styles.distanceBadgeRow, { marginTop: spacing.md }]}>
+              <View
+                style={[
+                  styles.distanceBadge,
+                  { backgroundColor: colors.primary, borderRadius: radii.sm },
+                ]}
+              >
+                <Text
+                  style={{
+                    color: colors.onPrimary,
+                    fontFamily: typography.family.bold,
+                    fontSize: typography.size.sm,
+                  }}
+                >
+                  {formatDistance(cafe.distance_meters)}
+                </Text>
+              </View>
+              <View style={[styles.distanceBadgePoint, { borderLeftColor: colors.primary }]} />
+            </View>
+          ) : null}
+
           {cafe.description ? (
-            <Text
-              style={{
-                color: colors.text,
-                fontFamily: typography.family.regular,
-                fontSize: typography.size.md,
-                marginTop: spacing.xl,
-                lineHeight: 24,
-              }}
-            >
-              <Text style={{ fontFamily: typography.family.bold }}>Description: </Text>
-              {cafe.description}
-            </Text>
+            <View style={{ marginTop: spacing.xl }}>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontFamily: typography.family.bold,
+                  fontSize: typography.size.md,
+                }}
+              >
+                About
+              </Text>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontFamily: typography.family.regular,
+                  fontSize: typography.size.md,
+                  marginTop: spacing.xs,
+                  lineHeight: 24,
+                }}
+              >
+                {cafe.description}
+              </Text>
+            </View>
           ) : null}
 
           <View style={[styles.amenityRow, { gap: spacing.md, marginTop: spacing.xl }]}>
             <AmenityBadge
-              label="Outlet"
-              tone={cafe.outlets ? 'outlet' : 'neutral'}
-              icon={<Icon name="Outlet" size={35} color={colors.text} />}
+              label="Outlets"
+              verified={cafe.outlets}
+              icon={<Icon name="Outlet" size={30} color={colors.text} />}
             />
-            <AmenityBadge label="Wifi" tone={cafe.wifi ? 'wifi' : 'neutral'} />
+            <AmenityBadge
+              label="Wi-Fi"
+              verified={cafe.wifi}
+              icon={<Icon name="Wifi" size={26} color={colors.text} />}
+            />
             <AmenityBadge
               label="seats"
-              tone="neutral"
-              count={cafe.seat_count != null ? String(cafe.seat_count) : '—'}
+              count={cafe.seat_count != null ? `${cafe.seat_count}+` : '—'}
             />
           </View>
 
@@ -196,10 +226,12 @@ export default function CafeDetailScreen() {
 }
 
 /**
- * Figma draws this area as a grey "Link to map" placeholder — a WIP box, not
- * a designed surface. Rather than embed a real map view (which needs a
- * native build outside Expo Go), this opens the device's own Maps app, which
- * is closer to what the placeholder's label already implied.
+ * The PDF shows a real map (street name, dropped pin) here. Embedding a live
+ * `MapView` needs a native build outside Expo Go, which currently fails on
+ * this machine's Xcode against Expo SDK 57's own `expo-modules-jsi` (an
+ * open upstream bug — see design.md). This opens the device's Maps app
+ * instead, closer to the intent than the Figma Styleguide page's grey
+ * placeholder box was.
  */
 function CafeLocationCard({ cafe }: { cafe: Cafe }) {
   const { colors, radii, spacing, typography } = useTheme();
@@ -221,7 +253,7 @@ function CafeLocationCard({ cafe }: { cafe: Cafe }) {
         },
       ]}
     >
-      <Icon name="LocationPin" size={28} color={colors.text} />
+      <Icon name="LocationPin" size={28} color={colors.primary} />
       <Text
         style={{
           color: colors.text,
@@ -253,7 +285,31 @@ const styles = StyleSheet.create({
   },
   addressRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+  },
+  distanceBadgeRow: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    alignSelf: 'flex-start',
+  },
+  distanceBadge: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    justifyContent: 'center',
+  },
+  /** The PDF's distance badge is a ribbon with a pointed right edge, not a
+   * plain pill — a CSS-triangle abutting the badge's rounded-rect body. */
+  distanceBadgePoint: {
+    width: 0,
+    height: 0,
+    alignSelf: 'center',
+    borderTopWidth: 13,
+    borderBottomWidth: 13,
+    borderLeftWidth: 10,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
   },
   amenityRow: {
     flexDirection: 'row',

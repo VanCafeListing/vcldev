@@ -6,14 +6,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CafeCard } from '@/components/cafe-card';
 import { Icon } from '@/components/ui';
 import { getCafesFallback, getNearbyCafes } from '@/lib/cafes';
+import { getFirstName } from '@/lib/display-name';
 import { useFavouriteAction } from '@/lib/favourites';
+import { useSession } from '@/lib/session';
 import { useUserLocation } from '@/lib/use-user-location';
 import { useTheme } from '@/theme';
 
-/** Figma (70:2397): "Find a cafe" / "Cafes near you", cafe cards below. */
+/** PDF Home artboard: "Hi, {name}!" / "Cafes near you", cafe cards below. */
 export default function HomeScreen() {
   const { colors, spacing, typography } = useTheme();
   const router = useRouter();
+  const { session } = useSession();
   const location = useUserLocation();
   const { isFavourited, toggleFavourite } = useFavouriteAction();
 
@@ -27,9 +30,10 @@ export default function HomeScreen() {
   });
 
   const loading = location.status === 'loading' || cafesQuery.isLoading;
+  const firstName = getFirstName(session);
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.surface }]} edges={['top']}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
       <FlatList
         data={cafesQuery.data ?? []}
         keyExtractor={(cafe) => cafe.id}
@@ -48,7 +52,7 @@ export default function HomeScreen() {
                 marginBottom: spacing.xl,
               }}
             >
-              Find a cafe
+              {firstName ? `Hi, ${firstName}!` : 'Find a cafe'}
             </Text>
 
             <View style={styles.sectionRow}>
