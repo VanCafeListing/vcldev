@@ -33,7 +33,14 @@ Tapping a heart icon while a guest shows a lightweight prompt with those three a
 The Home feed is a photo-heavy scrolling list; `expo-image`'s caching keeps scroll performance acceptable. Photo URLs come from the `cafe-photos` Storage bucket bootstrap already provisioned (public read).
 
 **Map: "Open in Maps" via `Linking`, not an embedded `MapView`.**
-`react-native-maps` was tried first and works fine in principle, but Expo SDK 57's `expo-modules-jsi` fails to compile against Xcode 26.2 on the dev machine (an open upstream Expo bug, unrelated to this change) — and that build only has to happen at all because a native module forces the app out of Expo Go. Rather than block this change on an upstream fix, the Cafe detail's Location card opens the device's own Maps app instead. This is arguably closer to Figma's own grey "Link to map" placeholder than an embedded view would have been. Revisit an embedded `MapView` once the toolchain issue is resolved upstream.
+`react-native-maps` was tried first and works fine in principle, but Expo SDK 57's `expo-modules-jsi` fails to compile against Xcode 26.2 on the dev machine (an open upstream Expo bug, unrelated to this change) — and that build only has to happen at all because a native module forces the app out of Expo Go. Rather than block this change on an upstream fix, the Cafe detail's Location card opens the device's own Maps app instead. Revisit an embedded `MapView` once the toolchain issue is resolved upstream.
+
+**PDF is now the primary design source (revised mid-implementation).**
+Home and Cafe detail first shipped built from the Figma Styleguide page (per the project's original Figma-primary rule), but the user flagged the result as visually unfaithful — the PDF's version of the same two screens (which the file also draws, on the artboard directly beside Sign-up/Profile) turned out to be the more finished design: a different card treatment (photo fills the whole card with an overlay scrim, not a solid brown footer), a floating pill tab bar instead of a full-width bar, a distance-ribbon badge, amber amenity tiles with a verified checkmark, and a "Hi, {name}!" greeting. The user then made this the standing rule project-wide (`openspec/config.yaml`'s design-source-of-truth section), not just a one-off fix. The rebuild:
+- Sampled exact colours from a 600dpi crop of each PDF artboard with a small PIL script (`Image.getcolors()` on a tight crop, sorted by frequency) rather than eyeballing — PDF rasterization adds antialiasing noise a Figma vector fill doesn't have, so values within a few hex points of an existing token reuse that token instead of minting a near-duplicate.
+- Traced new icons (Heart, Outlet, Wifi, Checkmark, all four tab icons) from those crops with `potrace` — real vector paths from the actual artwork, not hand-drawn or substituted from an icon-font library.
+- Added `expo-linear-gradient` for the card's bottom scrim — a standard precompiled Expo module, unlike `react-native-maps` it doesn't force a native build.
+- Consolidated tokens the two sources disagreed on: `background`/`authBackground` merged (both were the same `#f1eae7` PDF tone once auth screens and Home/Cafe-detail agreed), and the two-greens `amenityOutlet`/`amenityWifi`/`amenityNeutral` collapsed to one `amenityTile` amber shared by all three tiles.
 
 ## Risks / Trade-offs
 
@@ -50,9 +57,9 @@ The Home feed is a photo-heavy scrolling list; `expo-image`'s caching keeps scro
 
 ## Open Questions
 
-Each has a working default, so none blocks implementation — but they should go to the designers.
+Superseded now that Home and Cafe detail are built from the PDF rather than the Figma Styleguide page (the questions below were specific to that Figma frame and no longer apply — the PDF draws one unambiguous version of each):
 
-- Home (70:2397) and Home_1 (81:2460) draw two cafe-card treatments. Which is current? Default: 70:2397, the frame named plainly "Home".
-- What does Home's `tabler:dots-filled` icon open? Nothing in the file says. Default: the Filters sheet, mirroring Search's explicit filter button.
-- Are the cafe detail screen's two amenity greens (`#dbf897` Outlet, `#d3efb0` Wifi) deliberate or drift between similar swatches? Default: implement both exactly as drawn.
-- The detail screen's Location area is a grey "Link to map" placeholder in Figma. Default: render the real map there, styled to match the Cafe detail surface.
+- ~~Home (70:2397) and Home_1 (81:2460) draw two cafe-card treatments. Which is current?~~ Moot — the PDF's card treatment (photo-fills-card with overlay scrim) is what shipped.
+- What does Home's "···" dots icon open? Still open — nothing in either source says. Default unchanged: the Filters sheet, mirroring Search's explicit filter button.
+- ~~Are the cafe detail screen's two amenity greens deliberate or drift?~~ Moot — the PDF uses one amber tone for all three tiles.
+- The detail screen's Location area: the PDF shows a real map (street name, dropped pin), which the app can't embed live (see the `react-native-maps` decision above) — it opens the device's Maps app instead. Revisit once the toolchain issue is fixed upstream.

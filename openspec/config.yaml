@@ -100,17 +100,24 @@ context: |
     Inter.
 
     Surface colours: taken from the hi-fi Figma frames, USER-CONFIRMED to
-    win over the documented scale where they differ. Encoded in
-    src/theme/tokens.ts as `figma`:
-      #a44012  cafe card body (Home feed)
+    win over the documented scale where they differ (for the screens that
+    remain Figma-only — Search, Filters). Encoded in src/theme/tokens.ts
+    as `figma`:
+      #a44012  cafe card body (Figma Styleguide page's Home — superseded
+                by the PDF card treatment, see SCREENS below)
       #42210c  Apply button (Filters sheet)
       #fb8b24  selected filter chip
-      #6F1414  tab bar icons
-      #fffbf5  tab bar background
-      #FFFCF8  "Off White" — screen background, text on brown surfaces
-      #dbf897  Outlet amenity tile
-      #d3efb0  Wifi amenity tile
+      #6F1414  tab bar icons (Figma tab bar — superseded by the PDF's
+                floating brown pill, see SCREENS below)
+      #fffbf5  tab bar background (superseded, ditto)
+      #FFFCF8  "Off White" — text on the legacy brown card body
       #3B3B3B  "Dark Grey" (status bar text)
+    Screen background and amenity-tile colours now come from the PDF
+    instead (see the design-source-of-truth revision and SCREENS below):
+      #f1eae7  screen background (`colors.background`) — same value as
+                the "Beer Glazed Bacon" scale's own tint-90 step
+      #FFE1B8  amenity tile background, all three tiles (`amber['2']`)
+      #FFB54D  amenity "verified" checkmark badge (`amber['5']`)
     NOT a brand colour: Figma's named "Primary" variable #545F71, a
     slate blue-grey. It is the same colour as the WIP placeholder boxes
     and the user confirmed it is template residue — use our own neutral
@@ -137,39 +144,61 @@ context: |
       4 #FFC471, 5 #FFB54D, 6 #D3953E, 7 #A7752E, 8 #7C551F, 8.5 #664517,
       9 #50350F, 9.5 #3A2508, 10 #241500
 
-  SCREENS — from the Figma Styleguide page (PRIMARY). All frames 402x874
-  unless noted. Coordinates are Figma pt from the frame's top-left.
+  SCREENS. Home and Cafe detail are now built from the PDF artboards (see
+  the design-source-of-truth revision above), not the Figma frames noted
+  below — the Figma coordinates for those two are kept only as a record of
+  what the Styleguide page draws, in case it's ever needed again. Search
+  and Filters remain Figma-only (402x874 unless noted; coordinates are
+  Figma pt from the frame's top-left).
 
-    Home (70:2397) — bg white, status bar #FFFCF8:
-      "Find a cafe" bold 32 black at (19,80)
-      "Cafes near you" regular 20 black at (22,147); tabler:dots-filled
-        24pt at the right on the same line — the filter entry point
-      Cafe cards: 362x236, radius 15, bg #a44012, at x21 y186 and y448,
-        shadow 0 4px 17.2px -1px rgba(0,0,0,.1). The photo fills the top
-        155pt (top corners rounded); the remaining ~81pt is the brown
-        footer holding, in #FFFCF8: name bold 20, then a location pin +
-        "address · 3.7km" regular 16. solar:heart-linear 24pt sits at the
-        footer's right.
-      Home_1 (81:2460) is the same screen with the card footer treated
-        slightly differently — check both before finalising the card.
+    Home — PDF artboard, bg #f1eae7 (palest "Beer Glazed Bacon" tint):
+      "Hi, {first name}!" bold 32 black (guest/no name on record falls
+        back to "Find a cafe" — a WIP gap the PDF doesn't resolve)
+      "Cafes near you" regular 20 black, "···" (tabler-style dots) at the
+        right on the same line — the filter entry point (target unbuilt,
+        cafe-filters change)
+      Cafe cards: photo fills the ENTIRE card (rounded on all 4 corners,
+        not just the top) — no separate brown footer block. Name (bold
+        20, black) + pin (brand brown) + address (black, one line) +
+        heart-outline (black, PDF's own glyph — not solar:heart-linear)
+        sit directly over the photo's bottom edge on a white-to-
+        transparent gradient scrim for legibility.
+      [Superseded Figma reference, 70:2397/81:2460: 362x236 cards, solid
+       #a44012 brown footer with off-white text — this was the version
+       shipped first and found unfaithful next to the PDF.]
 
-    Cafe detail (73:2412) — bg #FFFCF8:
-      Hero photo full-width 402x198 at y52 (under the status bar)
-      "Tealips Cafe" bold 32 black at (19,270); heart 24pt at the right
-      pin + "address · 3.7km" regular 16 black at y318
-      "Description:" bold 16 + body regular 16, at (21,366), width 327
-      Three amenity tiles 105x101, radius 15, at y435:
-        Outlet  x20   bg #dbf897, material-symbols outlet icon 35pt
-        Wifi    x148  bg #d3efb0
-        seats   x276  bg #d9d9d9 (PLACEHOLDER colour), "24" extrabold 32
-                      over "seats" medium 16
-        Labels are medium 16 black. NOTE: no verified checkmark — that
-        was the older PDF iteration.
-      "Location" bold 16 at (21,567), then the map: 362x236 radius 15 at
-        y600. In Figma this is a grey box captioned "Link to map" — a
-        PLACEHOLDER. Build the real map here.
+    Cafe detail — PDF artboard, bg #f1eae7:
+      Hero photo full-width, ~220pt tall, straight bottom edge (not
+        rounded — the rounding starts one level down, on the amenity/map
+        cards)
+      Name bold 32 black; heart-outline (PDF glyph) at the right
+      Pin (brand brown) + address, TWO LINES, regular 16 black — no
+        inline "· distance"
+      Distance shown separately below the address: a brand-brown RIBBON
+        badge (rounded-rect body + a pointed right edge, like a price
+        tag) with white bold text, e.g. "3.7km"
+      "About" bold 16 (not "Description:") + body regular 16 on its own
+        line below (not inline)
+      Three amenity tiles 105x101, radius ~15, ALL THE SAME amber
+        background (#FFE1B8 — amber['2']), unlike Figma's two greens:
+        Outlets — a power/standby glyph (traced from the PDF, not
+          material-symbols); Wi-Fi — standard wifi glyph; seats — "20+"
+          extrabold over "seats" medium. Outlets and Wi-Fi each carry an
+          amber "verified" checkmark badge (amber['5'] circle, white
+          ring, dark checkmark) overlapping the tile's top-right corner
+          — Figma's Styleguide page removed this checkmark; the PDF has
+          it, and the PDF now wins.
+      "Location" bold 16, then a real map with a dropped pin and the
+        street name labelled (Google-Maps-style marker). The app can't
+        embed a live MapView here (react-native-maps needs a native
+        build that currently fails against this machine's Xcode/Expo
+        SDK 57 combo — an upstream bug, see cafe-discovery's design.md);
+        it opens the device's Maps app instead.
+      [Superseded Figma reference, 73:2412: brown-footer-style single-
+       line "address · distance", "Description:" label, two-green
+       amenity tiles with no checkmark, grey "Link to map" placeholder.]
 
-    Search (75:2474) — this screen IS designed; it was never a gap:
+    Search (75:2474) — Figma only, no PDF equivalent — this screen IS designed:
       "Tailored to your needs", a labelled "Search" text input with
       iconamoon:search-light, a separate filter button (mage:filter)
       beside it, "Recent searches" with chips (outlet / desserts /

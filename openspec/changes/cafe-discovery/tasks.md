@@ -11,14 +11,15 @@
 
 ## 3. Home Feed
 
-- [x] 3.1 Build the cafe card component (photo, name, address, distance, heart icon) using `design-system` primitives
-- [x] 3.2 Build `app/(tabs)/index.tsx`: "Find a cafe" / "Cafes near you" header (per Figma 70:2397 — no "Hi, {name}" greeting is drawn there), card list wired to `getNearbyCafes`/`getCafesFallback` depending on permission result
+- [x] 3.1 Build the cafe card component (photo, name, address, distance, heart icon) using `design-system` primitives — rebuilt to the PDF's overlay treatment (photo fills the whole card, text on a bottom scrim) after the initial Figma-sourced version (solid brown footer) was flagged as unfaithful
+- [x] 3.2 Build `app/(tabs)/index.tsx`: "Hi, {name}!" / "Cafes near you" header (PDF; falls back to "Find a cafe" for guests or a session with no name on record), card list wired to `getNearbyCafes`/`getCafesFallback` depending on permission result
 - [x] 3.3 Loading and empty states for the list
+- [x] 3.4 (Out of this change's original scope, done alongside the PDF rebuild since it's shared chrome visible on every screen touched here) Rebuilt `BottomNavBar` — owned by `bootstrap-app-foundation` — from the Figma full-width cream bar to the PDF's floating brand-brown pill with newly-traced icons
 
 ## 4. Cafe Detail
 
-- [x] ~~4.1 Install `react-native-maps`~~ — reverted. Expo SDK 57's `expo-modules-jsi` fails to compile against this machine's Xcode 26.2 (open upstream bug, unrelated to this change), which only surfaces once a native module forces a build outside Expo Go. Per user decision, replaced with a tappable "Open in Maps" card (`Linking` to the device's Maps app) — closer to Figma's own grey "Link to map" placeholder anyway. Revisit `react-native-maps` once Expo patches the toolchain issue.
-- [x] 4.2 Build `app/cafe/[id].tsx`: single hero photo, name + heart, address, About text, three amenity tiles (Outlet/Wifi/seat-count — no checkmark; confirmed via Figma the checkmark was an older PDF iteration), Location card that opens the device's Maps app
+- [x] ~~4.1 Install `react-native-maps`~~ — reverted. Expo SDK 57's `expo-modules-jsi` fails to compile against this machine's Xcode 26.2 (open upstream bug, unrelated to this change), which only surfaces once a native module forces a build outside Expo Go. Replaced with a tappable "Open in Maps" card (`Linking` to the device's Maps app). Revisit `react-native-maps` once Expo patches the toolchain issue.
+- [x] 4.2 Build `app/cafe/[id].tsx`: hero photo, name + heart, two-line address, a distance-ribbon badge, "About" + body, three amber amenity tiles with a verified-checkmark badge on Outlets/Wifi, Location card that opens the device's Maps app — rebuilt to match the PDF artboard (see design.md) after the initial Figma-sourced version was flagged as unfaithful
 - [x] 4.3 Wire card taps to navigate to the detail route with the cafe id
 
 ## 5. Favourite Toggle
