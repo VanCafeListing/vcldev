@@ -29,7 +29,7 @@ export default function HomeScreen() {
   const loading = location.status === 'loading' || cafesQuery.isLoading;
 
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.background }]} edges={['top']}>
+    <SafeAreaView style={[styles.root, { backgroundColor: colors.surface }]} edges={['top']}>
       <FlatList
         data={cafesQuery.data ?? []}
         keyExtractor={(cafe) => cafe.id}
