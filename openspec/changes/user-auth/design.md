@@ -11,7 +11,6 @@
 - A guaranteed `profiles` row for every account, regardless of which sign-up path created it.
 
 **Non-Goals:**
-- Forgot/reset password — no button or screen for it exists anywhere in the mockup; excluded outright, not deferred.
 - Profile editing, Delete Account, and the Profile menu screen itself — these belong to a future `profile-settings` change.
 - Password strength meters, MFA, or any validation UI beyond what the spec requires (matching passwords, ToS checkbox, email format) — the mockup shows none of this.
 
@@ -34,6 +33,15 @@ Supabase's raw error strings (e.g. "Invalid login credentials") are mapped to ou
 
 **ToS consent: a real gating checkbox, deviating from the mockup.**
 The mockup draws only a centred sentence with a "Terms of Service" link and no checkbox, which would mean consent is implied by tapping "Sign up". The user explicitly chose to add a gating checkbox instead, so account creation carries auditable proof of consent. This is the one deliberate UI addition in this change; everything else matches the drawing.
+
+**Usernames are derived from the email local-part, uniquified with a counter, and assigned by the existing trigger.**
+The design never collects a username — Sign Up asks only for name, email and password — yet the Profile screen displays one and Log In accepts one. Generating it server-side in `handle_new_user` keeps that contradiction from reaching the user and guarantees every account has one, including OAuth sign-ups. Collisions append an incrementing suffix inside the same transaction, so account creation cannot fail on a name clash. Alternative considered: asking for a username at sign-up — rejected, it would add a field the design does not have.
+
+**Sign-in by username goes through an Edge Function, not a public lookup.**
+Supabase's `signInWithPassword` takes an email, so a username has to be resolved first. Exposing that resolution to the client — even via a SECURITY DEFINER RPC that returns the email for an exact match — would let anyone walk a username list and harvest the matching email addresses. Decision: a `sign-in` Edge Function takes the identifier and password, resolves a username to its email with the service role, signs in server-side, and returns the session for the client to adopt. The client never learns any email it did not already have. Cost: one more deployed function and a slower sign-in path than calling Supabase directly.
+
+**Password reset uses Supabase's own email flow with the app's deep-link scheme.**
+`resetPasswordForEmail` with a `vancafelisting://` redirect, then a set-new-password screen that calls `updateUser` against the recovery session the link establishes. The reset request always reports success, whether or not the address has an account, so the screen cannot be used to test which emails are registered.
 
 **Password policy: Supabase's default minimum (6 characters), no custom complexity rules.**
 The mockup shows no password strength indicator or complexity hint. Adding custom rules would be inventing UI not in the source design.

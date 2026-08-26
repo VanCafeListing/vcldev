@@ -4,4 +4,5 @@ export { Button, type ButtonVariant } from './button';
 export { Card } from './card';
 export { Icon, type IconName } from './icon';
 export { Logo } from './logo';
+export { PasswordInput } from './password-input';
 export { TextInput } from './text-input';
