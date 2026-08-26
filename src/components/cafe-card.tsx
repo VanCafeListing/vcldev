@@ -13,7 +13,7 @@ import { useTheme } from '@/theme';
  * treatment — superseded now the PDF is the primary design source).
  */
 const CARD_HEIGHT = 236;
-const OVERLAY_HEIGHT = 100;
+const OVERLAY_HEIGHT = 150;
 
 type CafeCardProps = {
   cafe: Cafe;
@@ -51,7 +51,13 @@ export function CafeCard({ cafe, isFavourited, onPress, onToggleFavourite }: Caf
         )}
 
         <LinearGradient
-          colors={['transparent', 'rgba(255,255,255,0.55)', 'rgba(255,255,255,0.92)']}
+          colors={[
+            'rgba(255,255,255,0)',
+            'rgba(255,255,255,0.75)',
+            'rgba(255,255,255,0.96)',
+            'rgba(255,255,255,0.98)',
+          ]}
+          locations={[0, 0.35, 0.65, 1]}
           style={[styles.scrim, { height: OVERLAY_HEIGHT }]}
         />
 
@@ -59,11 +65,14 @@ export function CafeCard({ cafe, isFavourited, onPress, onToggleFavourite }: Caf
           <View style={styles.footerText}>
             <Text
               numberOfLines={1}
-              style={{
-                color: colors.text,
-                fontFamily: typography.family.bold,
-                fontSize: typography.size.lg,
-              }}
+              style={[
+                styles.nameShadow,
+                {
+                  color: colors.text,
+                  fontFamily: typography.family.bold,
+                  fontSize: typography.size.lg,
+                },
+              ]}
             >
               {cafe.name}
             </Text>
@@ -125,5 +134,12 @@ const styles = StyleSheet.create({
   addressRow: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  /** Extra insurance for the name, which sits highest — where the scrim is
+   * still ramping up — so it stays legible over a bright/busy photo. */
+  nameShadow: {
+    textShadowColor: 'rgba(255,255,255,0.9)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
 });
