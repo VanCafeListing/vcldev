@@ -6,7 +6,7 @@
 
 - Implement the Sign Up screen for real: first/last name, email, password + confirm password (with show/hide toggles), and account creation via Supabase Auth (email/password), creating the corresponding `profiles` row.
 - Add a required "I agree to the Terms of Service" checkbox gating submission. **Approved deviation**: the mockup draws only the sentence "I agree to the Terms of Service" with a tappable link and no checkbox; the user explicitly approved adding a real gating checkbox for auditable consent.
-- Add a Log In screen. **Mockup gap**: no Log In screen was in the source PDF (only Sign Up). Default: mirror the Sign Up screen's styling with just email + password (no name/confirm/ToS fields) and a "Sign in" primary button, per the project's recorded default for this gap.
+- Add a Log In screen. A "Welcome back!" screen is drawn on the wider Figma board — build from it rather than from the earlier default of mirroring Sign Up minus fields. It sits outside the Styleguide page, so confirm styling details with the user before over-investing.
 - Wire social sign-in/sign-up (Apple, Google, Facebook) on both screens via Supabase Auth OAuth, using the `vancafelisting://` redirect scheme already configured in `app.json`.
 - Wire the Splash screen's "Sign up" / "Log in" buttons to these real screens (guest routing is already implemented by `app-shell` and is unaffected).
 - Implement real sign-out: the Profile tab's placeholder "Log out" action now calls Supabase Auth's sign-out and ends the real session (extends the already-scaffolded routing behavior with the real auth call).

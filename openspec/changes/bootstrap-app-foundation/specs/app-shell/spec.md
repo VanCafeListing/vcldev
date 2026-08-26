@@ -26,7 +26,7 @@ WHEN the app launches with an active session, the user SHALL be routed directly 
 - **THEN** the user SHALL be routed directly to the main tab shell (Home tab), bypassing the Splash and sign-up/log-in screens
 
 ### Requirement: Main tab shell exposes exactly four destinations
-The main tab shell SHALL provide a persistent bottom navigation bar with exactly four destinations: Home, Search, Map, Profile.
+The main tab shell SHALL provide a persistent bottom navigation bar with exactly four destinations: Home, Search, Map, Profile, rendered as a full-width bar in the design's tab-bar color with the design's exported icons.
 
 #### Scenario: Switching tabs preserves other tabs' state
 - **WHEN** a user is in the main tab shell and selects a different tab

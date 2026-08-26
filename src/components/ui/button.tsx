@@ -3,14 +3,15 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, type ViewStyle } from '
 import { useTheme } from '@/theme';
 
 /**
- * The four button styles the design uses:
- * - `primary`   brand brown — Sign up, Apply
+ * The button styles the design uses:
+ * - `primary`   brand brown — Sign up on the splash
  * - `secondary` light brown tint — Log in on the splash
+ * - `deep`      deep brown (#42210c) — Apply on the Filters sheet
  * - `neutral`   dark charcoal — Save, avatar Edit, dialog confirms
  *               (the design has no destructive red; Delete uses this too)
  * - `outlined`  transparent with a border — Cancel in dialogs
  */
-export type ButtonVariant = 'primary' | 'secondary' | 'neutral' | 'outlined';
+export type ButtonVariant = 'primary' | 'secondary' | 'deep' | 'neutral' | 'outlined';
 
 type ButtonProps = {
   label: string;
@@ -37,6 +38,7 @@ export function Button({
   const palette: Record<ButtonVariant, { background: string; text: string; border: string }> = {
     primary: { background: colors.primary, text: colors.onPrimary, border: 'transparent' },
     secondary: { background: colors.secondary, text: colors.onSecondary, border: 'transparent' },
+    deep: { background: colors.deepAction, text: colors.onDeepAction, border: 'transparent' },
     neutral: {
       background: colors.neutralAction,
       text: colors.onNeutralAction,

@@ -1,102 +1,81 @@
-import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
-import type { ComponentProps } from 'react';
+import type { ReactNode } from 'react';
 
 import { useTheme } from '@/theme';
 
-type IoniconName = ComponentProps<typeof Ionicons>['name'];
+/**
+ * Which amenity the tile represents. The Figma detail screen gives each its
+ * own background: two greens for the boolean amenities and a neutral for the
+ * seat count.
+ */
+export type AmenityTone = 'outlet' | 'wifi' | 'neutral';
 
 type AmenityBadgeProps = {
   label: string;
-  /** Icon-style tile (Outlets, Wi-Fi). Ignored when `count` is given. */
-  icon?: IoniconName;
-  /** Count-style tile — renders large text instead of an icon, e.g. "20+". */
+  tone: AmenityTone;
+  /** Icon-style tile — pass the exported icon for the amenity. */
+  icon?: ReactNode;
+  /** Count-style tile: large number above the label, e.g. "24" seats. */
   count?: string;
-  /**
-   * Shows the circled checkmark in the corner. In the design only the boolean
-   * amenities (Outlets, Wi-Fi) carry it; the seat-count tile does not.
-   */
-  verified?: boolean;
 };
 
+/** Figma: 105x101 tile, 15pt radius. */
+const TILE_WIDTH = 105;
+const TILE_HEIGHT = 101;
+
 /**
- * An amenity tile from the cafe detail screen: an amber rounded square holding
- * either an icon or a count, with the amenity name beneath it.
+ * An amenity tile from the cafe detail screen.
+ *
+ * Note there is no "verified" checkmark in the hi-fi design — an earlier
+ * iteration had one, but the current frames use the tile's background colour
+ * alone to distinguish the amenities.
  */
-export function AmenityBadge({ label, icon, count, verified = false }: AmenityBadgeProps) {
-  const { colors, radii, spacing, typography } = useTheme();
+export function AmenityBadge({ label, tone, icon, count }: AmenityBadgeProps) {
+  const { colors, radii, typography } = useTheme();
+
+  const background = {
+    outlet: colors.amenityOutlet,
+    wifi: colors.amenityWifi,
+    neutral: colors.amenityNeutral,
+  }[tone];
 
   return (
-    <View style={styles.wrapper}>
-      <View
-        style={[
-          styles.tile,
-          {
-            backgroundColor: colors.accentSoft,
-            borderRadius: radii.md,
-            paddingVertical: spacing.md,
-            paddingHorizontal: spacing.lg,
-            gap: spacing.xs,
-          },
-        ]}
-      >
-        {count ? (
-          <Text
-            style={{
-              color: colors.text,
-              fontFamily: typography.family.black,
-              fontSize: typography.size.xl,
-            }}
-          >
-            {count}
-          </Text>
-        ) : icon ? (
-          <Ionicons name={icon} size={typography.size.xl} color={colors.text} />
-        ) : null}
-
+    <View style={[styles.tile, { backgroundColor: background, borderRadius: radii.lg }]}>
+      {count ? (
         <Text
           style={{
             color: colors.text,
-            fontFamily: typography.family.regular,
-            fontSize: typography.size.sm,
+            fontFamily: typography.family.black,
+            fontSize: 32,
+            letterSpacing: -0.352,
           }}
         >
-          {label}
+          {count}
         </Text>
-      </View>
+      ) : (
+        icon
+      )}
 
-      {verified ? (
-        <View
-          style={[styles.check, { backgroundColor: colors.accent, borderColor: colors.surface }]}
-          accessibilityLabel={`${label} verified`}
-        >
-          <Ionicons name="checkmark" size={14} color={colors.onAccent} />
-        </View>
-      ) : null}
+      <Text
+        style={{
+          color: colors.text,
+          fontFamily: typography.family.regular,
+          fontSize: typography.size.md,
+          letterSpacing: -0.176,
+        }}
+      >
+        {label}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    // Lets the checkmark overhang the tile's top-right corner.
-    paddingTop: 8,
-    paddingRight: 8,
-  },
   tile: {
+    width: TILE_WIDTH,
+    height: TILE_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 92,
-  },
-  check: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    gap: 4,
   },
 });

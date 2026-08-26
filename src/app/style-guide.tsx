@@ -1,8 +1,8 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AmenityBadge, Button, Card, Logo, TextInput } from '@/components/ui';
-import { amber, brown, neutral, useTheme } from '@/theme';
+import { AmenityBadge, Button, Card, Icon, Logo, TextInput } from '@/components/ui';
+import { amber, brown, figma, neutral, useTheme } from '@/theme';
 
 /**
  * Dev-only style guide for visually checking the primitives and both colour
@@ -72,6 +72,7 @@ export default function StyleGuideScreen() {
           <Text style={heading}>Buttons</Text>
           <Button label="Sign up" variant="primary" />
           <Button label="Log in" variant="secondary" />
+          <Button label="Apply" variant="deep" />
           <Button label="Save" variant="neutral" />
           <Button label="Cancel" variant="outlined" />
           <Button label="Loading" variant="primary" loading />
@@ -88,9 +89,9 @@ export default function StyleGuideScreen() {
         <View style={{ gap: spacing.md }}>
           <Text style={heading}>Amenity badges</Text>
           <View style={{ flexDirection: 'row', gap: spacing.md }}>
-            <AmenityBadge label="Outlets" icon="power" verified />
-            <AmenityBadge label="Wi-Fi" icon="wifi" verified />
-            <AmenityBadge label="seats" count="20+" />
+            <AmenityBadge label="Outlet" tone="outlet" />
+            <AmenityBadge label="Wifi" tone="wifi" />
+            <AmenityBadge label="seats" tone="neutral" count="24" />
           </View>
         </View>
 
@@ -133,7 +134,21 @@ export default function StyleGuideScreen() {
           ]}
         />
         <Swatches title="Amber accent" entries={Object.entries(amber)} />
+        <Swatches title="From the Figma frames" entries={Object.entries(figma)} />
         <Swatches title="Neutrals" entries={Object.entries(neutral)} />
+
+        <View style={{ gap: spacing.md }}>
+          <Text style={heading}>Icons (exported from Figma)</Text>
+          <View style={{ flexDirection: 'row', gap: spacing.lg, alignItems: 'center' }}>
+            <Icon name="TabHome" size={32} color={colors.tabIcon} />
+            <Icon name="TabSearch" size={32} color={colors.tabIcon} />
+            <Icon name="TabMap" size={32} color={colors.tabIcon} />
+            <Icon name="TabUser" size={32} color={colors.tabIcon} />
+            <Icon name="Heart" size={24} color={colors.text} />
+            <Icon name="DotsFilled" size={24} color={colors.text} />
+            <Icon name="LocationPin" size={20} color={colors.card} />
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

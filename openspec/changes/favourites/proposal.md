@@ -5,7 +5,7 @@
 ## What Changes
 
 - Implement the Favourites list screen: the authenticated user's favourited cafes, rendered with the same card-list component `cafe-discovery` built for Home/Search.
-- **Correction from earlier planning**: Favourites is NOT a bottom-nav tab. The mockup's third tab is a Map (a location pin on a folded map), and the only entry point to favourites is the "♥ Favourites" button in the Profile menu. This screen is therefore pushed from Profile, not mounted as a tab.
+- **Correction from earlier planning**: Favourites is NOT a bottom-nav tab — the third tab is the Map, and the only entry point to favourites is the "♥ Favourites" button in the Profile menu, so this screen is pushed from Profile. A Favourites screen is also drawn on the wider Figma board; build from it rather than from the "reuse the Home list" default this proposal originally assumed.
 - Unfavouriting from this screen (tapping the heart) removes the cafe from the list immediately, using the same shared favourites cache `cafe-discovery` already introduced — no new toggle logic.
 - Empty state when the user has no favourites yet.
 - Guest state: since guests can't create favourites (per `cafe-discovery`'s spec), the screen shows a sign-in/sign-up prompt for guests rather than a blank or broken list. (In practice guests reach it only if the Profile menu is reachable in guest mode; the prompt guarantees correct behavior either way.)

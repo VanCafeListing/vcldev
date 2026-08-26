@@ -80,18 +80,57 @@ export const amber = {
  */
 export const neutral = {
   white: '#FFFFFF',
+  black: '#000000',
   dark: '#3A3A3A',
+  darkGrey: '#3B3B3B',
   border: '#C9C9C9',
   muted: '#8A8A8A',
   track: '#D4D4D4',
+  /**
+   * The grey Figma uses for unfinished placeholders (image slots, the map
+   * box). Kept so those areas can be rendered as explicit skeletons rather
+   * than mistaken for a designed surface.
+   */
+  placeholder: '#D9D9D9',
 } as const;
 
 /**
- * Semantic roles. Screens should reach for these rather than raw scale values,
- * so a palette change lands in one place.
+ * Colours read directly off the hi-fi Figma frames on the Styleguide page.
+ *
+ * These sit outside the "Beer Glazed Bacon" scale above — the scale is the
+ * documented palette, but the frames paint surfaces with their own values and
+ * the user confirmed the frames win. Both are kept: the scale for shading and
+ * derived tones, these for the surfaces they actually appear on.
+ *
+ * Deliberately NOT included: Figma's named "Primary" variable (#545F71, a
+ * slate blue-grey used for chip borders). It is the same colour as the WIP
+ * placeholder boxes and the user confirmed it is template residue, so borders
+ * use our own neutral instead.
+ */
+export const figma = {
+  /** Cafe card body on the Home feed. */
+  cardBrown: '#a44012',
+  /** The Apply button on the Filters sheet. */
+  deepBrown: '#42210c',
+  /** Selected filter chip. */
+  selected: '#fb8b24',
+  /** Tab bar icons. */
+  tabIcon: '#6F1414',
+  /** Tab bar background. */
+  tabBar: '#fffbf5',
+  /** "Off White" — screen background and text on brown surfaces. */
+  offWhite: '#FFFCF8',
+  /** Amenity tiles on the cafe detail screen. */
+  amenityOutlet: '#dbf897',
+  amenityWifi: '#d3efb0',
+} as const;
+
+/**
+ * Semantic roles. Screens should reach for these rather than raw values, so a
+ * palette change lands in one place.
  */
 export const colors = {
-  /** Brand brown: primary buttons, the splash field, the bottom nav bar. */
+  /** Brand brown: primary buttons and brand surfaces. */
   primary: brown.base,
   onPrimary: neutral.white,
 
@@ -103,23 +142,39 @@ export const colors = {
   neutralAction: neutral.dark,
   onNeutralAction: neutral.white,
 
-  /** Amber accent: selected filter chips, amenity tiles, the Favourites button. */
-  accent: amber['5'],
-  accentSoft: amber['2'],
-  accentSofter: amber['1'],
-  onAccent: amber['10'],
+  /** Cafe cards: brown body with off-white text laid over the photo. */
+  card: figma.cardBrown,
+  onCard: figma.offWhite,
 
-  /** Screen backgrounds. Most screens sit on the palest brown tint. */
-  background: brown.tint[90],
+  /** The Filters sheet's Apply button. */
+  deepAction: figma.deepBrown,
+  onDeepAction: neutral.white,
+
+  /** Selected filter chip. */
+  accent: figma.selected,
+  onAccent: neutral.white,
+
+  /** Amenity tiles on the cafe detail screen. */
+  amenityOutlet: figma.amenityOutlet,
+  amenityWifi: figma.amenityWifi,
+  amenityNeutral: neutral.placeholder,
+
+  /** Screen backgrounds. The hi-fi frames sit on off-white. */
+  background: figma.offWhite,
   surface: neutral.white,
   surfaceAlt: amber['0.5'],
 
-  text: '#111111',
+  /** Bottom tab bar: cream with dark red-brown icons. */
+  tabBar: figma.tabBar,
+  tabIcon: figma.tabIcon,
+
+  text: neutral.black,
   textMuted: neutral.muted,
   textOnBrand: brown.tint[80],
 
   border: neutral.border,
   track: neutral.track,
+  placeholder: neutral.placeholder,
 } as const;
 
 /** 4pt spacing scale. */

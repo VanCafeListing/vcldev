@@ -1,6 +1,6 @@
 ## Why
 
-The mockup's bottom navigation has four tabs, and the third — drawn consistently in all four screens that show the nav bar — is a map icon (a location pin on a folded map). No Map screen was ever designed, so `bootstrap-app-foundation` scaffolds that tab as a placeholder. Leaving it empty ships a visibly broken quarter of the app's primary navigation. Since the whole product is about finding a nearby cafe to work from, a map of those cafes is also the most natural thing that tab could be.
+The bottom navigation's third tab is a map, and `bootstrap-app-foundation` scaffolds it as a placeholder. The designers have drawn the map experience on the wider Figma board, so leaving the tab empty ships a visibly broken quarter of the app's primary navigation against a design that already exists.
 
 ## What Changes
 
@@ -9,7 +9,7 @@ The mockup's bottom navigation has four tabs, and the third — drawn consistent
 - Respect the same location-permission fallback `cafe-discovery` established: if permission is denied, the map still renders with cafes plotted, just not centred on the user.
 - Apply the active filter criteria from `cafe-filters` so the map and the Home/Search lists stay consistent about which cafes are "in play".
 
-**Approved deviation**: no Map screen exists in the source design, so this screen's layout is invented rather than matched. The user explicitly chose building a real cafe map over shipping a placeholder tab. Its chrome reuses existing design-system primitives, and the map itself reuses the same `react-native-maps` setup `cafe-discovery` already introduces for the Cafe detail screen's Location section, so the visual vocabulary stays consistent with the drawn screens.
+**Correction**: an earlier draft of this proposal called the Map screen an invented addition. It is not — the designers drew it on the wider Figma board (node 1:2): a full map with cafe pins, a back + search + filter bar, a "List" bottom sheet of cafe cards, and a selected-pin state. Build from those frames. They sit outside the Styleguide page, so treat them as design intent rather than final pixels, and confirm styling details with the user rather than over-investing in them.
 
 ## Capabilities
 

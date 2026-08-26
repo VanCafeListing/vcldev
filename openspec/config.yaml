@@ -17,10 +17,36 @@ context: |
       This is settled — do not re-open it or re-litigate Flutter.
     - Auth providers: email/password, Apple, Google, Facebook OAuth.
 
-  Design system source: Figma-exported PDF ("App design.pdf") + an
-  Illustrator logo ("VanCafe_Logo.ai"), both supplied by the user and
-  committed to the repo at design/source/ (App-design.pdf,
-  VanCafe_Logo.ai) as the project's source of truth.
+  DESIGN SOURCE OF TRUTH — read this before any UI work:
+
+    1. PRIMARY: the hi-fi Figma file, "App Design"
+       fileKey 9JDdHP5R8xc1iShHq8nXQa, page "Styleguide" (70:2098).
+       Access it through the Figma MCP. Load the figma-design-to-code
+       skill BEFORE calling get_design_context (the tool requires it).
+       The finished frames on that page are:
+         70:2397  Home            (402x874)
+         81:2460  Home_1          (Home, alternate card treatment)
+         73:2412  Cafe detail     (frame is named "Home")
+         75:2474  Search_home
+         75:2531  Filter_popup    (402x819)
+       The user confirmed this page is the current design.
+
+    2. SECONDARY: design/source/App-design.pdf. This is an EARLIER
+       iteration. Use it only for screens the Styleguide page does not
+       cover — splash, sign up, profile menu, profile edit, and the
+       log-out / delete-account dialogs. Where the two disagree on a
+       screen both contain, Figma wins.
+
+    3. design/source/VanCafe_Logo.ai — the logo artwork.
+
+    The file also contains node 1:2, a large board holding several older
+    iterations plus map, favourites and push-notification screens. Treat
+    it as history/reference, not as spec, unless the user says otherwise.
+
+    WIP WARNING (from the user): the hi-fi frames are not uniformly
+    finished. Flat #D9D9D9 and slate #545F71 rectangles are PLACEHOLDERS
+    (image slots, the "Link to map" box), not designed surfaces. Build
+    the real component in their place; never reproduce a grey box.
 
   The logo is a monogram spelling "VAN" (confirmed by the user): the V,
   A and N are interlocked into a single angular mark with a serif foot,
@@ -43,8 +69,41 @@ context: |
   unnamed), so "Lato" comes from the design's own text label, not
   embedded font metadata.
 
-  Design tokens (confirmed from the source PDF):
-    - Font: Lato.
+  Design tokens.
+
+    Font: Lato. USER-CONFIRMED. The Figma frames render in Inter, but
+    both the PDF and the Figma board carry an explicit "Font: Lato" spec
+    panel; the Inter in the frames is unstyled WIP. Do not switch to
+    Inter.
+
+    Surface colours: taken from the hi-fi Figma frames, USER-CONFIRMED to
+    win over the documented scale where they differ. Encoded in
+    src/theme/tokens.ts as `figma`:
+      #a44012  cafe card body (Home feed)
+      #42210c  Apply button (Filters sheet)
+      #fb8b24  selected filter chip
+      #6F1414  tab bar icons
+      #fffbf5  tab bar background
+      #FFFCF8  "Off White" — screen background, text on brown surfaces
+      #dbf897  Outlet amenity tile
+      #d3efb0  Wifi amenity tile
+      #3B3B3B  "Dark Grey" (status bar text)
+    NOT a brand colour: Figma's named "Primary" variable #545F71, a
+    slate blue-grey. It is the same colour as the WIP placeholder boxes
+    and the user confirmed it is template residue — use our own neutral
+    border instead.
+
+    Icons: the design uses specific icon sets — Flaticon `fi-rr-*` (tab
+    bar), `solar:heart-linear`, `tabler:dots-filled`,
+    `iconamoon:search-light`, `mage:filter`,
+    `material-symbols-light:outlet-rounded`, `radix-icons:cross-2`.
+    Exported SVGs live in design/icons/ and are compiled into
+    src/components/ui/icon.tsx. NEVER substitute an icon-font glyph
+    (Ionicons etc.) or hand-draw a path — export the real asset.
+
+    The documented "Beer Glazed Bacon" scale below is still the palette
+    for shading and derived tones; the surface colours above override it
+    where a frame paints something specific.
     - Color scale "Beer Glazed Bacon" (brand brown), Base + 10–90% shade/tint:
       shades (darker): 753011, 692b0f, 5e260e, 52220c, 461d0a, 3b1809,
         2f1307, 230e05, 170a03, 0c0502
@@ -55,62 +114,98 @@ context: |
       4 #FFC471, 5 #FFB54D, 6 #D3953E, 7 #A7752E, 8 #7C551F, 8.5 #664517,
       9 #50350F, 9.5 #3A2508, 10 #241500
 
-  Screens in the mockup — all 9, verified (iOS status-bar style, mobile only):
-    - Splash/landing: logo on brand-brown with a wave curve into a cream
-      lower half, then "Sign up" (brown), "Log in" (light tint),
-      "Start as a guest" (plain text). No status bar on this screen.
-    - Sign up: "< Back", "Welcome! / Create your new account",
-      First Name* + Last Name* side by side, Email*, Password* and
-      Confirm Password* (each with an eye/eye-slash visibility toggle),
-      then centred text "I agree to the Terms of Service" (link-coloured
-      tail), an "Or sign in with" divider, three icon-only social buttons
-      (Apple/Google/Facebook), a "Sign up" button, and
-      "Already have an account? Sign in".
-      NOTE: no ToS CHECKBOX is drawn — only the sentence. The user
-      decided to ADD a real gating checkbox anyway (auditable consent);
-      this is a deliberate, approved deviation from the mockup.
-    - Home feed: "Hi, Alice!", then "Cafes near you" with a "..." icon at
-      the right (the only plausible filter entry point). Cards carry one
-      photo, name, a pin icon + address, and an outline heart at the
-      right. Distance is appended to the address ("address · 3.7km") and
-      is absent on the first card — treat distance as optional per card.
-    - Cafe detail: ONE full-bleed hero photo (not a gallery/carousel),
-      name + outline heart, pin + address, a brown "3.7km" distance
-      badge, "About" + description, then three amber amenity tiles —
-      Outlets and Wi-Fi each with an amber circled checkmark, and a
-      "20+ seats" count tile with NO checkmark — then "Location" and a
-      map with a pin. Bottom nav is present. No back button is drawn.
-    - Filters (a modal: ✕, "Filters", "Clear all"; no bottom nav):
-      Location (Nearest [selected/amber], Commuter Friendly, Easy
-      Parking), Workspace Essentials (Free Wi-Fi, Outlets), Price Range
-      (a DUAL-THUMB range slider — two amber thumbs with an amber fill
-      between them — labelled $5 and $20), Seating (Spacious, Wide
-      Tables, Patio Seating), Atmosphere (Quiet, Lively), and a brown
-      "Apply" button.
-    - Bottom nav (4 tabs): Home, Search, MAP (a location pin on a folded
-      map), Profile. The third tab is a MAP, not a bookmark/favourites
-      tab — favourites are reached from the Profile menu instead.
-    - Profile menu: avatar + "Username" + email (no Edit affordance drawn
-      here), an amber "♥ Favourites" button, then a grouped list —
-      Notification, Privacy Policy, Terms of Use (each with a "›"
-      chevron), Log Out and Delete Account (no chevron; these open
-      dialogs). Bottom nav present.
-    - Confirmation dialogs: "Do you want to delete this account?" with
-      Cancel (outlined) / Delete (dark charcoal), and "Do you want to
-      log-out from this account?" with Cancel / Logout. NOTE: the Delete
-      button is charcoal, NOT red — there is no destructive-red styling
-      anywhere in this design.
-    - Profile edit (a modal: ✕ + "Profile" title; no bottom nav): avatar
-      with a dark "Edit" button beneath it, a single "Name" field (not
-      first/last), an "Email" field, and a full-width dark "Save" button.
+  SCREENS — from the Figma Styleguide page (PRIMARY). All frames 402x874
+  unless noted. Coordinates are Figma pt from the frame's top-left.
 
-  Button variants present in the design (all three are needed):
-    - Primary: brand brown (#753011) — Sign up, Apply
+    Home (70:2397) — bg white, status bar #FFFCF8:
+      "Find a cafe" bold 32 black at (19,80)
+      "Cafes near you" regular 20 black at (22,147); tabler:dots-filled
+        24pt at the right on the same line — the filter entry point
+      Cafe cards: 362x236, radius 15, bg #a44012, at x21 y186 and y448,
+        shadow 0 4px 17.2px -1px rgba(0,0,0,.1). The photo fills the top
+        155pt (top corners rounded); the remaining ~81pt is the brown
+        footer holding, in #FFFCF8: name bold 20, then a location pin +
+        "address · 3.7km" regular 16. solar:heart-linear 24pt sits at the
+        footer's right.
+      Home_1 (81:2460) is the same screen with the card footer treated
+        slightly differently — check both before finalising the card.
+
+    Cafe detail (73:2412) — bg #FFFCF8:
+      Hero photo full-width 402x198 at y52 (under the status bar)
+      "Tealips Cafe" bold 32 black at (19,270); heart 24pt at the right
+      pin + "address · 3.7km" regular 16 black at y318
+      "Description:" bold 16 + body regular 16, at (21,366), width 327
+      Three amenity tiles 105x101, radius 15, at y435:
+        Outlet  x20   bg #dbf897, material-symbols outlet icon 35pt
+        Wifi    x148  bg #d3efb0
+        seats   x276  bg #d9d9d9 (PLACEHOLDER colour), "24" extrabold 32
+                      over "seats" medium 16
+        Labels are medium 16 black. NOTE: no verified checkmark — that
+        was the older PDF iteration.
+      "Location" bold 16 at (21,567), then the map: 362x236 radius 15 at
+        y600. In Figma this is a grey box captioned "Link to map" — a
+        PLACEHOLDER. Build the real map here.
+
+    Search (75:2474) — this screen IS designed; it was never a gap:
+      "Tailored to your needs", a labelled "Search" text input with
+      iconamoon:search-light, a separate filter button (mage:filter)
+      beside it, "Recent searches" with chips (outlet / desserts /
+      matcha — the first two are selected/orange), then
+      "Recommendation" with cafe cards.
+
+    Filters (75:2531) — a sheet 402x819, bg white, top corners radius 50:
+      "Filters" medium 24 centred at y35; a circled radix cross at
+      (27,33); "Clear all" regular 16 at the right, y43
+      Section labels regular 16 black: Location (y115), Workspace
+      Essentials (y290), Price Range (y403), Seating (y515),
+      Atmosphere (y620)
+      Chips: height 48, radius 10, bg white, 16pt label. SELECTED chips
+      are bg #fb8b24 with white text (e.g. "Nearest"). Chip borders in
+      Figma use the leftover slate — use our neutral border instead.
+      Price range: a DUAL-THUMB slider — two 15pt round thumbs on a
+      track at y453, labelled "$5" (light 13). Confirms min+max, not a
+      single bound.
+      Apply: 362x48, radius 10, bg #42210c, white medium 20, at y740.
+
+    Tab bar (all main screens): a full-width bar, height 90, bg #fffbf5,
+      shadow 0 -5px 12.4px rgba(0,0,0,.15), sitting at y784. Four 32pt
+      icons in #6F1414: fi-rr-home, fi-rr-search, fi-rr-map, fi-rr-user.
+      It is NOT a floating brown pill — that was the PDF iteration.
+      The third tab is a MAP; favourites is reached from Profile.
+
+  SCREENS ONLY IN THE PDF (secondary source — use as-is until the
+  designers produce hi-fi versions):
+    - Splash/landing: logo on brand-brown, an asymmetric S-curve wave
+      (trough ~30% across, crest ~70%) into a cream lower half carrying a
+      faint faceted chevron texture and a beige-to-white gradient, then
+      "Sign up" (brown), "Log in" (light tint), "Start as a guest".
+      The artwork is extracted to assets/images/splash-bg.png.
+    - Sign up: "< Back", "Welcome! / Create your new account", First +
+      Last Name side by side, Email, Password and Confirm Password (each
+      with an eye/eye-slash toggle), the sentence "I agree to the Terms
+      of Service", an "Or sign in with" divider, three icon-only social
+      buttons (Apple/Google/Facebook), "Sign up", and "Already have an
+      account? Sign in".
+    - Profile menu: avatar + "Username" + email, a "♥ Favourites"
+      button, then Notification / Privacy Policy / Terms of Use (each
+      with a chevron), Log Out and Delete Account (no chevron — these
+      open dialogs).
+    - Confirmation dialogs: "Do you want to delete this account?" and
+      "Do you want to log-out from this account?", each Cancel
+      (outlined) / confirm (dark charcoal). The Delete button is
+      charcoal, NOT red — this design has no destructive red.
+    - Profile edit (modal: ✕ + "Profile"): avatar with a dark "Edit"
+      button beneath, a single "Name" field, "Email", and a full-width
+      dark "Save".
+
+  Button variants (all are implemented in src/components/ui/button.tsx):
+    - Primary:   brand brown #753011 — Sign up on the splash
     - Secondary: light brown tint — Log in on the splash
-    - Neutral/dark: dark charcoal (~#3A3A3A) — Save, avatar Edit, and the
-      Delete/Logout confirm buttons in dialogs
-    - Outlined: transparent with a thin border — Cancel in dialogs, and
-      the unselected filter chips
+    - Deep:      #42210c — Apply on the Filters sheet
+    - Neutral:   dark charcoal #3A3A3A — Save, avatar Edit, and the
+                 Delete/Logout confirm buttons in dialogs
+    - Outlined:  transparent with a border — Cancel in dialogs, and
+                 unselected filter chips
 
   Implied data model: profiles, cafes (lat/lng — PostGIS or haversine for
   "nearest"/radius queries — photos, description, price range), structured
@@ -121,13 +216,12 @@ context: |
   bucket for cafe photos; RLS so users only manage their own profile and
   favourites; account deletion must cascade cleanly.
 
-  MVP SCOPE RULE (explicit user directive, hard constraint): the supplied
-  PDF mockup and this design system ARE the MVP, as-is. Build exactly the
-  screens/flows shown in the mockup and nothing else — do not add
-  features, screens, or data beyond what's depicted, even if they seem
-  like natural extensions. If a proposal or design would introduce
-  something not visible in the mockup, cut it or ask first; never add it
-  by default.
+  MVP SCOPE RULE (explicit user directive, hard constraint): the design
+  (Figma first, PDF for what Figma lacks) IS the MVP, as-is. Build
+  exactly the screens/flows the designers drew and nothing else — do not
+  add features, screens, or data beyond what is depicted, even if they
+  seem like natural extensions. If a proposal would introduce something
+  not in the design, cut it or ask first; never add it by default.
 
   Explicitly out of scope (do not add unless the user asks):
   reviews/ratings, payments, chat, push-notification backend, dark mode,
@@ -136,26 +230,26 @@ context: |
   for end users, so treat cafe records as admin/seed-provisioned only
   unless the user says otherwise.
 
-  KNOWN MOCKUP GAPS (implied by an icon/button but never actually drawn).
-  Default for all: reuse the closest existing mockup screen/primitives
-  rather than inventing new layouts; flag the default in the relevant
-  proposal; stop defaulting the moment the user supplies a real design.
-    - No Log In screen (Sign Up's "Already have an account? Sign in" and
-      the splash's "Log in" both point at one). Default: Sign Up's field
-      set minus name/confirm/ToS.
-    - No Search screen (only the bottom-nav icon). Default: the Home
-      feed's card list plus a text search bar.
-    - No Map screen, despite the map tab appearing in all four drawn nav
-      bars. DECIDED with the user: build a real cafe map (pins → cafe
-      detail) as its own `cafe-map` change, rather than shipping an empty
-      tab. This is an approved addition beyond what's drawn.
-    - No Favourites list screen — only the Profile menu's "♥ Favourites"
-      button and the heart toggles on cards. IMPORTANT: favourites is NOT
-      a bottom-nav tab (that slot is the map); the list is a screen
-      pushed from the Profile menu. Default layout: the Home feed's card
-      list, filtered to favourites.
-    - No filter entry point drawn on Home/Search. Default: Home's "..."
-      icon opens Filters; Search gets an analogous icon.
+  RESOLVED BY FIGMA — these were recorded as "mockup gaps" while the PDF
+  was the only source. They are NOT gaps; the designers drew them. Build
+  from the Figma frames, not from the guesses that used to live here:
+    - Search — designed (75:2474). Has its own layout: "Tailored to your
+      needs", a labelled search input, a separate filter button, recent
+      searches as chips, and a Recommendation list. It is NOT just the
+      Home list with a search bar bolted on.
+    - Map — designed on the wider board (node 1:2): a real map with cafe
+      pins, a back + search + filter bar, a "List" bottom sheet of cafe
+      cards, and a selected-pin state. Not merely a placeholder tab.
+    - Favourites — designed on the wider board. Still reached from the
+      Profile menu, NOT a bottom-nav tab (that slot is the map).
+    - Log in — a "Welcome back!" screen exists on the wider board.
+    - Notification settings — a push-notification screen exists on the
+      wider board, so the Profile row is not merely a stub.
+    Where a screen lives only on board 1:2 rather than the Styleguide
+    page, treat it as intent rather than final pixels, and ask before
+    investing heavily in its styling.
+
+  REMAINING GAPS (genuinely not drawn anywhere):
     - No back button on the Cafe detail screen, and no Edit affordance on
       the Profile menu header. Default: standard back navigation, and
       tapping the avatar/username opens the Profile-edit modal.
