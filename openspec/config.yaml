@@ -160,6 +160,27 @@ context: |
       the Profile menu header. Default: standard back navigation, and
       tapping the avatar/username opens the Profile-edit modal.
 
+  VISUAL FIDELITY RULE (learned the hard way on the splash screen): the
+  mockup is the spec for how a screen LOOKS, not just what it contains.
+  Do not approximate a drawn shape with a cheap CSS equivalent and file
+  it as "polish" — the splash's wave is an asymmetric S-curve (trough
+  left, crest right) that was first shipped as a symmetric border-radius,
+  and it read as wrong immediately. When a screen has non-trivial
+  artwork:
+    - Measure it from `design/source/App-design.pdf` (render it, trace
+      the boundary, sample the colours) rather than eyeballing.
+    - Extract real artwork as an asset when it cannot be expressed
+      faithfully in code — see `assets/images/splash-bg.png`, generated
+      from the source with the mockup's own logo/buttons/text removed.
+    - Position content by the fractions measured from the source so it
+      stays aligned with a stretched background on any screen size.
+    - Do not mark a verification task done on routing/behaviour alone
+      when the task's screen has a designed appearance; compare the
+      rendered screen against the source and say so explicitly.
+  Subtle details count: the cream half carries a faint faceted chevron
+  texture and a vertical beige-to-white gradient. Check for texture and
+  gradients before assuming a region is a flat fill.
+
   APPROVED DEVIATIONS from the mockup (user-confirmed, do not "correct"
   these back to the drawing):
     - Add a real gating ToS checkbox on Sign Up (mockup shows only a

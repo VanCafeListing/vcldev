@@ -1,47 +1,76 @@
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { Button, Logo } from '@/components/ui';
 import { useSession } from '@/lib/session';
 import { useTheme } from '@/theme';
 
-/** Curve radius on the cream sheet's top corners. */
-const SHEET_CURVE = 48;
+/**
+ * Geometry measured from the splash artboard in `design/source/App-design.pdf`,
+ * as fractions of the screen. The background art is stretched to fill the
+ * screen, so positioning content by the same fractions keeps it aligned with
+ * the wave on any device rather than drifting on taller or shorter screens.
+ */
+const LOGO_WIDTH = 0.2596;
+const LOGO_CENTER_Y = 0.2987;
+const CONTENT_INSET = 0.087;
+const SIGN_UP_TOP = 0.7196;
+
+/** Aspect ratio of the VAN monogram, from the source artwork. */
+const LOGO_ASPECT = 111.03 / 80.01;
 
 /**
- * The landing screen: a brand-brown field holding the logo above a cream lower
- * half with the three entry points. The design's divider is an asymmetric wave;
- * this approximates it with a rounded top edge. Matching the exact curve is a
- * design-polish follow-up.
+ * The landing screen.
+ *
+ * The brown field, the wave, its faceted texture and the cream gradient are one
+ * background image extracted from the design source — the wave is an
+ * asymmetric S-curve (trough left, crest right) that a border radius cannot
+ * reproduce.
  */
 export default function SplashScreen() {
   const { colors, spacing, typography } = useTheme();
   const { continueAsGuest } = useSession();
   const router = useRouter();
-  const insets = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+
+  const logoWidth = width * LOGO_WIDTH;
 
   return (
     <View style={[styles.root, { backgroundColor: colors.primary }]}>
-      <View style={styles.brandArea}>
-        <Logo width={132} color={colors.textOnBrand} />
+      {/* Stretched, not cover: the wave must stay at its designed fraction of
+          the screen height so the content below lines up with it. */}
+      <Image
+        source={require('@/assets/images/splash-bg.png')}
+        style={StyleSheet.absoluteFill}
+        contentFit="fill"
+      />
+
+      {/* The status bar sits over the brown field, so it needs light content. */}
+      <StatusBar style="light" />
+
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: height * LOGO_CENTER_Y - logoWidth / LOGO_ASPECT / 2,
+          alignItems: 'center',
+        }}
+      >
+        <Logo width={logoWidth} color={colors.textOnBrand} />
       </View>
 
       <View
-        style={[
-          styles.sheet,
-          {
-            backgroundColor: colors.background,
-            // A gentle curve into the cream half, approximating the design's
-            // wave. A pill radius here balloons into a dome — keep it modest.
-            borderTopLeftRadius: SHEET_CURVE,
-            borderTopRightRadius: SHEET_CURVE,
-            paddingHorizontal: spacing.xl,
-            paddingTop: spacing.xxl,
-            paddingBottom: insets.bottom + spacing.xl,
-            gap: spacing.md,
-          },
-        ]}
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: height * SIGN_UP_TOP,
+          paddingHorizontal: width * CONTENT_INSET,
+          gap: spacing.sm,
+        }}
       >
         <Button label="Sign up" onPress={() => router.push('/(auth)/sign-up')} />
         <Button label="Log in" variant="secondary" onPress={() => router.push('/(auth)/log-in')} />
@@ -49,7 +78,7 @@ export default function SplashScreen() {
         <Pressable
           onPress={continueAsGuest}
           accessibilityRole="button"
-          style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1, padding: spacing.sm }]}
+          style={({ pressed }) => [{ opacity: pressed ? 0.6 : 1, paddingVertical: spacing.sm }]}
         >
           <Text
             style={{
@@ -70,13 +99,5 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-  },
-  brandArea: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sheet: {
-    justifyContent: 'flex-end',
   },
 });
