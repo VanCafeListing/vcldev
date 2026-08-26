@@ -1,6 +1,6 @@
 ## Purpose
 
-Defines how a user browses, searches, and views work-friendly cafes, and how they mark cafes as favourites from within those browsing surfaces.
+Defines how a user browses and views work-friendly cafes on the Home feed and cafe detail screen, and how they mark cafes as favourites from either. Text search lives in the `cafe-search` capability.
 
 ## ADDED Requirements
 
@@ -19,19 +19,8 @@ The Home feed SHALL display a list of cafes sorted nearest-first from the user's
 The Cafe detail screen SHALL show the cafe's hero photo, name, address, distance, About description, amenity badges reflecting its real structured data, and a map with its location pinned.
 
 #### Scenario: Opening a cafe's detail
-- **WHEN** a user taps a cafe card from the Home feed, Search tab, or Favourites screen
+- **WHEN** a user taps a cafe card from the Home feed, the Search screen, or Favourites
 - **THEN** the Cafe detail screen SHALL show that cafe's hero photo, name, address, About text, amenity badges matching its actual stored attributes (Wi-Fi, Outlets, seat count, etc.), and a map pin at its stored coordinate
-
-### Requirement: Search filters cafes by name
-The Search tab SHALL let a user filter the cafe list by name using a text query.
-
-#### Scenario: Searching by name
-- **WHEN** a user types a query into the Search tab's search bar
-- **THEN** the displayed list SHALL update to show only cafes whose name matches the query
-
-#### Scenario: No results
-- **WHEN** a search query matches no cafes
-- **THEN** the Search tab SHALL show a message indicating no cafes were found, not an empty or broken list
 
 ### Requirement: Authenticated users can toggle favourites from discovery screens
 An authenticated user SHALL be able to mark or unmark a cafe as a favourite by tapping its heart icon on a cafe card or the Cafe detail screen, and the icon SHALL reflect the current favourite state.

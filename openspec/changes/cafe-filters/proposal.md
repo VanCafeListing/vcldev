@@ -4,13 +4,13 @@ Work-friendliness filtering (Wi-Fi, outlets, seating, price, atmosphere, parking
 
 ## What Changes
 
-- Implement the Filters screen as a modal/sheet (close ✕, "Clear all" link, "Apply" primary button — matches the mockup's own chrome) with:
+- Implement the Filters sheet from Figma (75:2531): 402x819, white, top corners radius 50; a circled ✕ at the left, "Filters" centred, "Clear all" at the right; section labels at 16pt; chips 48pt tall with radius 10, selected chips filled `#fb8b24` with white text; and a full-width `#42210c` "Apply" button. Sections:
   - **Location**: "Nearest" (reaffirms the existing nearest-first sort — a no-op if already the default), "Commuter Friendly" and "Easy Parking" (real boolean filters on the `cafes` table)
   - **Workspace Essentials**: Free Wi-Fi, Outlets (boolean filters)
-  - **Price Range**: a $5–$20 slider (range filter on `price_range`)
+  - **Price Range**: a DUAL-THUMB min/max slider (two round thumbs on a shared track), filtering `price_range` between both bounds — not a single upper bound
   - **Seating**: Spacious, Wide Tables, Patio Seating (tag filters)
   - **Atmosphere**: Quiet, Lively (tag filters)
-- **Mockup gap**: no explicit "open filters" button was drawn on the Home or Search screens, only the Filters screen itself. Default: the Home feed's existing "⋯" header icon opens Filters; the Search tab gets an analogous filter icon next to its search bar, per the project's recorded default for undesigned trigger points.
+- Wire the entry points. The Search frame draws a real filter button (`mage:filter`, 46x48, beside the search input) — use it as designed. The Home frame draws a `tabler:dots-filled` icon on the "Cafes near you" row; nothing states what it opens, so treating it as the Filters trigger remains an assumption worth confirming with the designers.
 - Applying filters narrows the currently viewed list (Home or Search) to cafes matching every selected criterion (AND across categories); "Clear all" resets every selection.
 - A visual indicator (e.g. a badge/dot) on the filter trigger shows when one or more filters are active, so "Clear all" has a discoverable state to clear.
 - Filter selections persist only for the current app session (in-memory) — not saved across app restarts, since the mockup shows no such persistence.
