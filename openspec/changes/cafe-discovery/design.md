@@ -32,8 +32,8 @@ Tapping a heart icon while a guest shows a lightweight prompt with those three a
 **Cafe photos: `expo-image` (not core `Image`) for disk caching in the scrollable list.**
 The Home feed is a photo-heavy scrolling list; `expo-image`'s caching keeps scroll performance acceptable. Photo URLs come from the `cafe-photos` Storage bucket bootstrap already provisioned (public read).
 
-**Map: `react-native-maps` for the Cafe detail pin.**
-Mature, well-supported in Expo, matches the mockup's static pinned-location view (no interactive routing/directions needed for MVP).
+**Map: "Open in Maps" via `Linking`, not an embedded `MapView`.**
+`react-native-maps` was tried first and works fine in principle, but Expo SDK 57's `expo-modules-jsi` fails to compile against Xcode 26.2 on the dev machine (an open upstream Expo bug, unrelated to this change) — and that build only has to happen at all because a native module forces the app out of Expo Go. Rather than block this change on an upstream fix, the Cafe detail's Location card opens the device's own Maps app instead. This is arguably closer to Figma's own grey "Link to map" placeholder than an embedded view would have been. Revisit an embedded `MapView` once the toolchain issue is resolved upstream.
 
 ## Risks / Trade-offs
 
