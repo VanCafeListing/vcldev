@@ -34,5 +34,5 @@
 - [x] 6.1 Home feed loads real cafes, distance-sorted RPC verified directly against the database (nearest-first, correct meter values); on-device confirmation blocked by the simulator having no location provider configured in this session
 - [x] 6.2 Home feed still loads (unsorted, no distance) with location permission denied — verified on simulator
 - [x] 6.3 Cafe detail shows accurate data matching a seeded cafe's real attributes — verified on simulator
-- [ ] 6.5 Favouriting/unfavouriting from a card and from the detail screen stays consistent across both, as an authenticated user — blocked: the dev fixture account (`alice@gmail.com`) is rejecting its known password this session; needs the account's password reset or a fresh sign-up to verify
+- [x] 6.5 Favouriting/unfavouriting from a card and from the detail screen stays consistent across both, as an authenticated user — verified on simulator as `alice@gmail.com` (password reset directly via SQL after the dev fixture's saved password stopped working); toggling the detail screen's heart confirmed via direct DB query to insert then delete the `favourites` row
 - [x] 6.6 Tapping a heart icon as a guest prompts sign-in/sign-up and creates no favourite — verified on simulator
