@@ -36,7 +36,7 @@ export default function HomeScreen() {
         contentContainerStyle={{
           padding: spacing.xl,
           paddingBottom: spacing.xxxl + 90,
-          gap: spacing.lg,
+          gap: spacing.xl,
         }}
         ListHeaderComponent={
           <View style={{ marginBottom: spacing.lg }}>
