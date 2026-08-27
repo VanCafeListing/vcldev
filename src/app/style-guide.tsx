@@ -150,6 +150,11 @@ export default function StyleGuideScreen() {
             <Icon name="Outlet" size={24} color={colors.text} />
             <Icon name="Wifi" size={24} color={colors.text} />
             <Icon name="Checkmark" size={20} color={colors.text} />
+            <Icon name="Notification" size={24} color={colors.text} />
+            <Icon name="Privacy" size={24} color={colors.text} />
+            <Icon name="Terms" size={24} color={colors.text} />
+            <Icon name="LogOut" size={24} color={colors.text} />
+            <Icon name="Delete" size={24} color={colors.text} />
           </View>
         </View>
       </ScrollView>

@@ -46,6 +46,12 @@
         {
           "locationWhenInUsePermission": "VanCafe Listing uses your location to sort cafes by distance and show your position on the map."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "VanCafe Listing uses your photo library so you can choose a profile picture."
+        }
       ]
     ],
     "experiments": {

@@ -15,7 +15,9 @@ type PlaceholderScreenProps = {
  * A scaffolded screen that has not been implemented yet.
  *
  * `bootstrap-app-foundation` builds the navigation shell only; each feature
- * change replaces these stubs with the real screen.
+ * change replaces these stubs with the real screen. `profile-settings`
+ * reuses it for Notification/Privacy Policy/Terms of Use, which have no
+ * design or copy yet — just a title, "Content coming soon", and back nav.
  */
 export function PlaceholderScreen({ title, note, showBack = false }: PlaceholderScreenProps) {
   const { colors, spacing, typography } = useTheme();

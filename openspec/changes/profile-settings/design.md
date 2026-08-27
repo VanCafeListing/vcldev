@@ -36,6 +36,14 @@ Each is a simple screen with a title and "Content coming soon" body — no notif
 - [Risk] Disabling secure email-change confirmation means anyone with a logged-in session can redirect the account to an email they don't control, locking the original owner out only if they're also logged out elsewhere → Mitigation: acceptable at MVP scope (same trust boundary as the rest of the session-based app); revisit if this becomes a real abuse vector.
 - [Risk] `ON DELETE CASCADE` is powerful — a future accidental delete of an `auth.users` row (e.g. via dashboard) silently wipes that user's data too → Mitigation: expected/intended behavior here, but worth calling out since it's easy to forget once set.
 
+## Implementation Notes
+
+**Colors and icons sourced from the PDF's Profile menu / Profile edit / dialog artboards**, via the same 600dpi-crop-and-sample pipeline used for the rest of the app. All sampled values matched existing tokens exactly (no new tokens needed): row-container background `#F1EAE7` (`colors.background`), Favourites pill background `#FFE1B8` (`colors.amenityTile`), avatar placeholder `#D9D9D9` (`colors.placeholder`), and Edit/Save/Delete/Logout button fill `#3B3B3B` (`colors.neutralAction`'s underlying `neutral.dark`, within rasterization rounding) — confirming the existing "neutral" `Button` variant is exactly right for this screen group. The five row icons (Notification/Privacy/Terms/LogOut/Delete) were traced from the PDF via crop → threshold → `potrace`, the same pipeline as Heart/Wifi/Outlet; source SVGs live in `design/icons/`.
+
+**"Secure email change" confirmation**: not independently reconfirmed in the Supabase Auth dashboard this session — `user-auth` already disabled it project-wide per its own design decision, and this change relies on that being unchanged rather than re-verifying it.
+
+**Live verification was guest-only.** No test-account credentials were available this session (creating a new account is outside what this session can do), so the signed-in hub, Profile-edit save/avatar-upload, and the Log Out/Delete Account dialogs are verified by code review only, not on-device. The guest state (`app/(tabs)/profile.tsx`'s no-session branch, and the `/profile/edit` redirect guard added after a deep-link crash surfaced it) was verified live. Revisit with a real account when credentials are available.
+
 ## Migration Plan
 
 1. Migration: add `profiles.avatar_url`; create the `avatars` bucket with public-read/owner-write policies; confirm/add `ON DELETE CASCADE` on `profiles.id → auth.users.id` and `favourites.user_id → auth.users.id` (or `profiles.id`, whichever bootstrap used).
