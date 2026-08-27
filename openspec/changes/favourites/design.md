@@ -23,6 +23,10 @@ The screen checks session/guest state (same source `cafe-discovery`'s guest-prom
 
 - [Risk] Two related cache entries (id-only and full) could drift if only one is invalidated on toggle → Mitigation: the toggle mutation (already built in `cafe-discovery`) invalidates both keys together.
 
+## Implementation Notes
+
+**Screen built from `cafe-discovery`'s existing card-list conventions, not the wider Figma board's Favourites frame.** The proposal called for building from the Figma board's dedicated Favourites screen rather than defaulting to "reuse Home's list." The Figma MCP's `get_metadata` call against that board (node 1:2) failed with a response-parsing error (oversized/corrupted SSE payload) rather than returning usable data. Given `openspec/config.yaml` already treats board 1:2 as "history/reference, not spec, unless the user says otherwise," and design.md's own Goals already commit to reusing `cafe-discovery`'s card and list-rendering rather than duplicating it, the screen was built with the same header/list/empty-state/guest-prompt structure as the already-shipped Search screen. Revisit if the Figma board becomes fetchable and shows a materially different layout.
+
 ## Migration Plan
 
 1. Add `getFavouritedCafes(userId)` query function and its cache key.

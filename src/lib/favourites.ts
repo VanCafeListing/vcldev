@@ -4,6 +4,12 @@ import { useRouter } from 'expo-router';
 import { promptGuestToSignIn } from './guest-favourite-prompt';
 import { supabase } from './supabase';
 import { useSession } from './session';
+import type { Cafe } from './cafes';
+
+const CAFE_COLUMNS =
+  'id, name, description, address, photo_url, price_range, wifi, outlets, seat_count, ' +
+  'commuter_friendly, parking, seating_spacious, seating_wide_tables, seating_patio, ' +
+  'atmosphere_quiet, atmosphere_lively, lat, lng';
 
 /**
  * Every screen that shows a heart icon reads from this one query key, so
@@ -11,6 +17,9 @@ import { useSession } from './session';
  * screen (and vice versa) without each screen tracking its own copy.
  */
 const favouritesKey = (userId: string | undefined) => ['favourites', userId] as const;
+
+/** The Favourites screen's full-card-data cache — kept in sync with the id-only cache above. */
+const favouritedCafesKey = (userId: string | undefined) => ['favourites', userId, 'full'] as const;
 
 async function fetchFavouriteCafeIds(userId: string): Promise<Set<string>> {
   const { data, error } = await supabase.from('favourites').select('cafe_id').eq('user_id', userId);
@@ -30,6 +39,28 @@ export function useFavouriteIds() {
   });
 }
 
+/** Full cafe records for the Favourites screen — a single join, not N+1 lookups off the id cache. */
+async function getFavouritedCafes(userId: string): Promise<Cafe[]> {
+  const { data, error } = await supabase
+    .from('favourites')
+    .select(`cafe:cafes(${CAFE_COLUMNS})`)
+    .eq('user_id', userId);
+  if (error) throw error;
+  return ((data ?? []) as unknown as { cafe: Cafe }[]).map((row) => row.cafe);
+}
+
+/** The Favourites screen's list. Empty (and disabled) for guests. */
+export function useFavouritedCafes() {
+  const { session } = useSession();
+  const userId = session?.user.id;
+
+  return useQuery({
+    queryKey: favouritedCafesKey(userId),
+    queryFn: () => getFavouritedCafes(userId as string),
+    enabled: Boolean(userId),
+  });
+}
+
 /**
  * Optimistic favourite/unfavourite toggle. Flips the icon immediately by
  * updating the shared cache, then rolls back if the write fails.
@@ -39,6 +70,7 @@ export function useToggleFavourite() {
   const userId = session?.user.id;
   const queryClient = useQueryClient();
   const key = favouritesKey(userId);
+  const fullKey = favouritedCafesKey(userId);
 
   return useMutation({
     mutationFn: async ({ cafeId, isFavourited }: { cafeId: string; isFavourited: boolean }) => {
@@ -61,6 +93,14 @@ export function useToggleFavourite() {
         return next;
       });
 
+      // Optimistically drop the card from the Favourites screen's list too,
+      // so unfavouriting there removes it without waiting on a refetch.
+      if (isFavourited) {
+        queryClient.setQueryData<Cafe[]>(fullKey, (current) =>
+          current?.filter((cafe) => cafe.id !== cafeId)
+        );
+      }
+
       return { previous };
     },
     onError: (_err, _vars, context) => {
@@ -68,6 +108,7 @@ export function useToggleFavourite() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: key });
+      queryClient.invalidateQueries({ queryKey: fullKey });
     },
   });
 }
