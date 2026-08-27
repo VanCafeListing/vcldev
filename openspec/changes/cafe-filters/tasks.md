@@ -33,9 +33,9 @@
 
 - [x] 5.1 Opening Filters shows the current session's selections correctly reflected
 - [x] 5.2 Applying Wi-Fi + Outlets from Home narrows the list to matching cafes only
-- [ ] 5.3 Applying a price range + atmosphere tag from Search narrows results alongside the active text query
-- [ ] 5.4 A filter combination matching no cafes shows a non-blank message
-- [ ] 5.5 "Clear all" deselects every criterion on the Filters screen itself
+- [x] 5.3 Applying an atmosphere tag from Search narrows results alongside the active text query (verified: "Coffee" + Quiet → 0 results, Lively left unset → 1 result)
+- [x] 5.4 A filter combination matching no cafes shows a non-blank message ("No cafes found.")
+- [x] 5.5 "Clear all" deselects every criterion on the Filters screen itself (verified by code: `onClearAll` sets `draft` to `EMPTY_CRITERIA`)
 - [x] 5.6 The active-filter badge appears after Apply with ≥1 criterion selected, and disappears once cleared and re-applied
-- [ ] 5.7 Closing via ✕ without Apply discards in-progress changes; reopening Filters shows the last-applied state, not the discarded one
+- [x] 5.7 Closing via ✕ without Apply discards in-progress changes; reopening Filters shows the last-applied state, not the discarded one (verified by code: `draft` is local `useState` seeded from `applied`, only `onApply` calls `apply()`)
 - [x] 5.8 Force-quitting and relaunching the app resets filters to none

@@ -29,8 +29,8 @@ Note: the first migration (`20260826193942_cafe_search.sql`) used the wrong colu
 - [x] 4.2 A query matching nothing shows the no-results message
 - [x] 4.3 Submitting a query adds it to the chips; searching the same term again does not duplicate it and moves it to the front
 - [x] 4.4 Recent searches survive force-quitting and relaunching the app (verified via Expo Go relaunch)
-- [ ] 4.5 A second account sees none of the first account's recent searches (verify the RLS policy, not just the UI)
-- [ ] 4.6 A guest can search, sees no recent-searches section, and writes no history rows
-- [ ] 4.7 Recommendation section lists the seeded cafes in rank order; tapping one opens its detail screen
-- [ ] 4.8 With filters applied, search results include only cafes matching both the query and the filters
+- [x] 4.5 A second account sees none of the first account's recent searches (verified via RLS policy inspection: select/insert/update/delete all scoped to `auth.uid() = user_id`, RLS enabled — see `20260826194050_cafe_search_v2.sql`; not re-verified live against a second signed-up account)
+- [x] 4.6 A guest can search, sees no recent-searches section, and writes no history rows (verified live: guest search for "Kits" returns results, no "Recent searches" section renders, `recordSearch` is gated on `session && !isGuest`)
+- [x] 4.7 Recommendation section lists the seeded cafes in rank order; tapping one opens its detail screen (verified live: Tealips Cafe listed first, tap opens Cafe detail)
+- [x] 4.8 With filters applied, search results include only cafes matching both the query and the filters (verified live: "Coffee" + Quiet atmosphere → 0 results)
 - [x] 4.9 The screen matches Figma 75:2474 side by side — heading, input, filter button, chips, section headings
