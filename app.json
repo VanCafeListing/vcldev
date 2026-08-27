@@ -13,9 +13,10 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "VanCafe Listing uses your location to sort cafes by distance and show your position on the map."
       },
-      "bundleIdentifier": "com.anonymous.vancafe-listing"
+      "bundleIdentifier": "com.vcl.vancafelisting"
     },
     "android": {
+      "package": "com.vcl.vancafelisting",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

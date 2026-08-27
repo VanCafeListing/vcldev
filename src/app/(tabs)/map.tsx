@@ -73,7 +73,7 @@ export default function MapScreen() {
         initialRegion={VANCOUVER_REGION}
         showsUserLocation={location.status === 'granted'}
         showsMyLocationButton={location.status === 'granted'}
-        accessibilityLabel="Cafe map"
+        accessibilityLabel={`Cafe map, ${cafesWithCoordinates.length} cafes`}
       >
         {cafesWithCoordinates.map((cafe) => (
           <Marker
@@ -82,6 +82,7 @@ export default function MapScreen() {
             title={cafe.name}
             description={cafe.address ?? 'Open cafe details'}
             pinColor={colors.primary}
+            accessibilityLabel={`${cafe.name} map marker`}
             onCalloutPress={() => router.push(`/cafe/${cafe.id}`)}
           />
         ))}
