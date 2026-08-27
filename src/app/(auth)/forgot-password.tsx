@@ -1,4 +1,3 @@
-import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
@@ -14,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, TextInput } from '@/components/ui';
+import { authRedirectUrl } from '@/lib/auth-session-url';
 import { supabase } from '@/lib/supabase';
 import { isValidEmail } from '@/lib/validation';
 import { useTheme } from '@/theme';
@@ -53,7 +53,7 @@ export default function ForgotPasswordScreen() {
     // unknown address is exactly the leak this screen must not have.
     await supabase.auth
       .resetPasswordForEmail(email.trim(), {
-        redirectTo: Linking.createURL('/reset-password'),
+        redirectTo: authRedirectUrl('reset-password'),
       })
       .catch(() => undefined);
 

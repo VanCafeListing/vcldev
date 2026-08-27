@@ -1,6 +1,8 @@
 import type { Session } from '@supabase/supabase-js';
+import * as Linking from 'expo-linking';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 
+import { applyAuthSessionFromUrl } from './auth-session-url';
 import { ensureProfile } from './ensure-profile';
 import { supabase } from './supabase';
 
@@ -58,6 +60,30 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     return () => {
       active = false;
       subscription.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    const handleUrl = async (url: string | null) => {
+      if (!url) return;
+
+      try {
+        const type = await applyAuthSessionFromUrl(url);
+        if (active && type === 'recovery') setIsRecovering(true);
+      } catch {
+        // Auth screens surface errors for flows they launch. A malformed or
+        // expired external link must not crash the app during cold start.
+      }
+    };
+
+    void Linking.getInitialURL().then(handleUrl);
+    const subscription = Linking.addEventListener('url', ({ url }) => void handleUrl(url));
+
+    return () => {
+      active = false;
+      subscription.remove();
     };
   }, []);
 

@@ -39,10 +39,10 @@
 
 ## 7. Social Sign-In (Sign Up screen only)
 
-- [ ] 7.1 Install and configure `expo-apple-authentication`; wire native Sign in with Apple, exchanging the identity token via `supabase.auth.signInWithIdToken()`
-- [ ] 7.2 Wire Google sign-in via `supabase.auth.signInWithOAuth()` + `expo-web-browser`
-- [ ] 7.3 Wire Facebook sign-in via `supabase.auth.signInWithOAuth()` + `expo-web-browser`
-- [ ] 7.4 Handle the OAuth redirect back into the app via the `vancafelisting://` scheme and complete the session
+- [x] 7.1 Install and configure `expo-apple-authentication`; wire native Sign in with Apple, exchanging the identity token via `supabase.auth.signInWithIdToken()`
+- [x] 7.2 Wire Google sign-in via `supabase.auth.signInWithOAuth()` + `expo-web-browser`
+- [x] 7.3 Wire Facebook sign-in via `supabase.auth.signInWithOAuth()` + `expo-web-browser`
+- [x] 7.4 Handle the OAuth redirect back into the app via the `vancafelisting://` scheme and complete the session
 
 ## 8. Sign-Out & Errors
 

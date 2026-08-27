@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, Checkbox, PasswordInput, TextInput } from '@/components/ui';
+import { SocialAuthButtons } from '@/components/social-auth-buttons';
 import { authErrorMessage } from '@/lib/auth-errors';
 import { supabase } from '@/lib/supabase';
 import { hasErrors, validateSignUp, type FieldErrors, type SignUpFields } from '@/lib/validation';
@@ -233,6 +234,22 @@ export default function SignUpScreen() {
                 {formError}
               </Text>
             ) : null}
+
+            <SocialAuthButtons
+              disabled={submitting}
+              onStart={() => {
+                if (!fields.acceptedTerms) {
+                  setErrors((current) => ({
+                    ...current,
+                    acceptedTerms: 'You must agree to the Terms of Service.',
+                  }));
+                  return false;
+                }
+                setFormError(null);
+                return true;
+              }}
+              onError={(error) => setFormError(authErrorMessage(error))}
+            />
 
             <Button
               label="Sign up"
