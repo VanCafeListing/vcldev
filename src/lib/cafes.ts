@@ -1,3 +1,4 @@
+import { applyCriteriaToQuery, criteriaToRpcParams, type FilterCriteria } from './filters';
 import { supabase } from './supabase';
 
 /**
@@ -36,15 +37,25 @@ const CAFE_COLUMNS =
   'atmosphere_quiet, atmosphere_lively, lat, lng';
 
 /** Nearest-first, via the `cafes_nearby` RPC — requires a resolved location. */
-export async function getNearbyCafes(lat: number, lng: number): Promise<Cafe[]> {
-  const { data, error } = await supabase.rpc('cafes_nearby', { user_lat: lat, user_lng: lng });
+export async function getNearbyCafes(
+  lat: number,
+  lng: number,
+  criteria?: FilterCriteria
+): Promise<Cafe[]> {
+  const { data, error } = await supabase.rpc('cafes_nearby', {
+    user_lat: lat,
+    user_lng: lng,
+    ...(criteria ? criteriaToRpcParams(criteria) : {}),
+  });
   if (error) throw error;
   return (data ?? []) as Cafe[];
 }
 
 /** Name-ordered fallback for when location permission is denied. */
-export async function getCafesFallback(): Promise<Cafe[]> {
-  const { data, error } = await supabase.from('cafes').select(CAFE_COLUMNS).order('name');
+export async function getCafesFallback(criteria?: FilterCriteria): Promise<Cafe[]> {
+  let query = supabase.from('cafes').select(CAFE_COLUMNS);
+  if (criteria) query = applyCriteriaToQuery(query, criteria);
+  const { data, error } = await query.order('name');
   if (error) throw error;
   return (data ?? []) as unknown as Cafe[];
 }

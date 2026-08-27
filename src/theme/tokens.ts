@@ -151,13 +151,28 @@ export const colors = {
   card: figma.cardBrown,
   onCard: figma.offWhite,
 
-  /** The Filters sheet's Apply button. */
-  deepAction: figma.deepBrown,
+  /**
+   * The Filters sheet's Apply button. Sampled from the PDF's Filters
+   * artboard — #834529 (brown.tint[10]), not the Figma Styleguide page's
+   * deep-brown Apply button (#42210c) the sheet was originally speced
+   * against before the PDF-primary switch.
+   */
+  deepAction: brown.tint[10],
   onDeepAction: neutral.white,
 
-  /** Selected filter chip. */
+  /**
+   * Selected chip on the Search screen's "Recent searches" row (Figma —
+   * Search has no PDF equivalent).
+   */
   accent: figma.selected,
   onAccent: neutral.white,
+
+  /**
+   * Selected chip on the PDF's Filters sheet — a muted amber with black
+   * text, distinct from Search's brighter `accent` chip.
+   */
+  filterChipSelected: amber['3'],
+  onFilterChipSelected: neutral.black,
 
   /**
    * Amenity tiles on the cafe detail screen. The PDF uses the same amber
@@ -168,16 +183,22 @@ export const colors = {
   amenityTile: amber['2'],
   amenityCheck: amber['5'],
 
+  /** Filters sheet's Price Range slider: filled track + thumbs. */
+  sliderFill: amber['5'],
+
   /**
-   * Screen background. Sampled from the PDF's Home/Cafe-detail/auth/Splash
-   * artboards — #f1eae7, the palest step of the "Beer Glazed Bacon" tint
-   * scale. The PDF is the primary design source (see openspec/config.yaml);
-   * this replaced the Figma Styleguide page's off-white now that the pages
-   * built from Figma alone (Search, Filters) have no shipped screen yet.
+   * Screen background. Sampled from the PDF's own artboards (Splash, Home,
+   * Cafe detail, auth, Filters) — #f1eae7, the palest step of the "Beer
+   * Glazed Bacon" tint scale. The PDF is the primary design source (see
+   * openspec/config.yaml); this replaced the Figma Styleguide page's
+   * off-white. Search remains Figma-only (#FFFCF8 background, a distinct
+   * shade from this one) — see `searchBackground` below.
    */
   background: brown.tint[90],
   surface: neutral.white,
   surfaceAlt: amber['0.5'],
+  /** Search screen's background (Figma 75:2474) — off-white, not pure white. */
+  searchBackground: figma.offWhite,
 
   text: neutral.black,
   textMuted: neutral.muted,

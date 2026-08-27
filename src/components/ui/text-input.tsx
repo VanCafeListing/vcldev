@@ -20,6 +20,8 @@ type TextInputProps = RNTextInputProps & {
    * the password visibility toggle, so passwords need no separate component.
    */
   trailing?: ReactNode;
+  /** Rendered inside the field at its leading edge — `cafe-search`'s search icon. */
+  leading?: ReactNode;
   containerStyle?: ViewStyle;
 };
 
@@ -28,6 +30,7 @@ export function TextInput({
   required = false,
   error,
   trailing,
+  leading,
   containerStyle,
   style,
   ...rest
@@ -60,6 +63,7 @@ export function TextInput({
           },
         ]}
       >
+        {leading}
         <RNTextInput
           placeholderTextColor={colors.textMuted}
           style={[

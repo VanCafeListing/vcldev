@@ -39,6 +39,17 @@ Simplest option that satisfies the spec's "visible indicator" requirement; the m
 - [Risk] "Nearest" being inert may look like a bug to a future reader → Mitigation: called out explicitly in this design doc and should be a code comment at the point it's rendered as always-effectively-selected.
 - [Risk] In-memory-only filter state means switching tabs away from Home mid-session and back keeps filters (Context persists) but an app restart silently drops them → Mitigation: matches the spec's explicit requirement; no user-facing surprise since there's no "saved filters" affordance in the mockup to set an expectation otherwise.
 
+## Implementation Notes
+
+**Colors were re-sourced from the PDF, not the Figma Styleguide page.** This design doc was originally written against Figma's Filters sheet before the project switched to the PDF as the primary design source (see `openspec/config.yaml`). Re-verified by cropping the PDF's Filters artboard at 600dpi and sampling pixel colors directly:
+- Apply button: `#834529` (`brown.tint[10]`), not Figma's `#42210c`.
+- Selected chip: `#FFD394` (`amber['3']`) with black text, not Figma's `#fb8b24`.
+- Slider fill/thumbs: `#FFB54D` (`amber['5']`).
+
+These are now `colors.deepAction`/`colors.filterChipSelected`/`colors.sliderFill` in `src/theme/tokens.ts`. The dual-thumb range slider and inert "Nearest" chip decisions above were independently confirmed against the same PDF artboard and needed no correction.
+
+**Range slider: built on `PanResponder`, not a third-party library.** The design doc above left the exact library as an implementation detail ("e.g. `rn-range-slider`"). Given the sliding interaction is simple (two thumbs, one track, no acceleration/momentum), it was built directly on React Native's core `PanResponder` (`src/components/ui/range-slider.tsx`) rather than adding a dependency — also avoids any risk of hitting native-module build issues (see the `react-native-maps`/Xcode 26.2 incompatibility documented elsewhere in this project).
+
 ## Migration Plan
 
 1. Add `FilterCriteria` type and the Postgrest filter-building function.

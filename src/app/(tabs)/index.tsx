@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CafeCard } from '@/components/cafe-card';
@@ -8,6 +8,7 @@ import { Icon } from '@/components/ui';
 import { getCafesFallback, getNearbyCafes } from '@/lib/cafes';
 import { getFirstName } from '@/lib/display-name';
 import { useFavouriteAction } from '@/lib/favourites';
+import { useFilters } from '@/lib/filters-context';
 import { useSession } from '@/lib/session';
 import { useUserLocation } from '@/lib/use-user-location';
 import { useTheme } from '@/theme';
@@ -19,13 +20,18 @@ export default function HomeScreen() {
   const { session } = useSession();
   const location = useUserLocation();
   const { isFavourited, toggleFavourite } = useFavouriteAction();
+  const { criteria, isActive } = useFilters();
 
   const cafesQuery = useQuery({
-    queryKey: ['cafes', location.status === 'granted' ? location.coords : 'fallback'],
+    queryKey: [
+      'cafes',
+      location.status === 'granted' ? location.coords : 'fallback',
+      criteria,
+    ],
     queryFn: () =>
       location.status === 'granted'
-        ? getNearbyCafes(location.coords.lat, location.coords.lng)
-        : getCafesFallback(),
+        ? getNearbyCafes(location.coords.lat, location.coords.lng, criteria)
+        : getCafesFallback(criteria),
     enabled: location.status !== 'loading',
   });
 
@@ -65,7 +71,19 @@ export default function HomeScreen() {
               >
                 Cafes near you
               </Text>
-              <Icon name="DotsFilled" size={24} color={colors.text} />
+              <Pressable
+                onPress={() => router.push('/filters')}
+                accessibilityRole="button"
+                accessibilityLabel="Filters"
+                hitSlop={8}
+              >
+                <Icon name="DotsFilled" size={24} color={colors.text} />
+                {isActive ? (
+                  <View
+                    style={[styles.filterBadge, { backgroundColor: colors.primary }]}
+                  />
+                ) : null}
+              </Pressable>
             </View>
           </View>
         }
@@ -90,7 +108,7 @@ export default function HomeScreen() {
                 marginTop: spacing.xxl,
               }}
             >
-              No cafes to show yet.
+              {isActive ? 'No cafes match these filters.' : 'No cafes to show yet.'}
             </Text>
           )
         }
@@ -105,5 +123,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  filterBadge: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
 });

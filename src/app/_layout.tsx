@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { FiltersProvider } from '@/lib/filters-context';
 import { SessionProvider, useSession } from '@/lib/session';
 import { ThemeProvider } from '@/theme';
 
@@ -49,8 +50,10 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <ThemeProvider>
           <SessionProvider>
-            <StatusBar style="dark" />
-            <SessionRouter />
+            <FiltersProvider>
+              <StatusBar style="dark" />
+              <SessionRouter />
+            </FiltersProvider>
           </SessionProvider>
         </ThemeProvider>
       </SafeAreaProvider>
