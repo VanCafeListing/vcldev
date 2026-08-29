@@ -143,6 +143,14 @@ export const colors = {
   onNeutralAction: neutral.white,
 
   /**
+   * The filled heart on a favourited cafe. A user directive, not from the
+   * design: the PDF draws only an outline heart and has no red anywhere, but
+   * brown-on-black outline read as no feedback at all when tapped. Warm enough
+   * to sit beside the brand brown rather than fight it.
+   */
+  favourite: '#D93A3A',
+
+  /**
    * Legacy: the brown-body/off-white-text cafe card from the Figma
    * Styleguide page. Superseded by the PDF's photo-with-overlay card
    * treatment (see `cafe-card.tsx`) now that the PDF is the primary design

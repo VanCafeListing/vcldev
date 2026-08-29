@@ -145,6 +145,7 @@ export default function StyleGuideScreen() {
             <Icon name="TabMap" size={32} color={colors.primary} />
             <Icon name="TabUser" size={32} color={colors.primary} />
             <Icon name="Heart" size={24} color={colors.text} />
+            <Icon name="HeartFilled" size={24} color={colors.favourite} />
             <Icon name="DotsFilled" size={24} color={colors.text} />
             <Icon name="LocationPin" size={20} color={colors.primary} />
             <Icon name="Outlet" size={24} color={colors.text} />

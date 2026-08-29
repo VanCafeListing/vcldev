@@ -120,9 +120,9 @@ export default function CafeDetailScreen() {
               }
             >
               <Icon
-                name="Heart"
+                name={isFavourited(cafe.id) ? 'HeartFilled' : 'Heart'}
                 size={22}
-                color={isFavourited(cafe.id) ? colors.primary : colors.text}
+                color={isFavourited(cafe.id) ? colors.favourite : colors.text}
               />
             </Pressable>
           </View>

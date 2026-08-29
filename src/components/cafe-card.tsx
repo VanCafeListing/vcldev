@@ -140,7 +140,11 @@ export function CafeCard({ cafe, isFavourited, onPress, onToggleFavourite }: Caf
             accessibilityLabel={isFavourited ? 'Remove from favourites' : 'Add to favourites'}
             style={{ borderRadius: radii.pill }}
           >
-            <Icon name="Heart" size={22} color={isFavourited ? colors.primary : colors.text} />
+            <Icon
+              name={isFavourited ? 'HeartFilled' : 'Heart'}
+              size={22}
+              color={isFavourited ? colors.favourite : colors.text}
+            />
           </Pressable>
         </View>
       </Card>
