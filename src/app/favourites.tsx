@@ -1,5 +1,13 @@
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CafeCard } from '@/components/cafe-card';
@@ -79,6 +87,13 @@ export default function FavouritesScreen() {
           data={favouritesQuery.data ?? []}
           keyExtractor={(cafe) => cafe.id}
           contentContainerStyle={{ padding: spacing.xl, gap: spacing.xl }}
+          refreshControl={
+            <RefreshControl
+              refreshing={favouritesQuery.isRefetching}
+              onRefresh={() => favouritesQuery.refetch()}
+              tintColor={colors.primary}
+            />
+          }
           renderItem={({ item }) => (
             <CafeCard
               cafe={item}
@@ -90,6 +105,20 @@ export default function FavouritesScreen() {
           ListEmptyComponent={
             favouritesQuery.isLoading ? (
               <ActivityIndicator color={colors.primary} style={{ marginTop: spacing.xxl }} />
+            ) : favouritesQuery.isError ? (
+              <View style={{ marginTop: spacing.xxl, gap: spacing.md, alignItems: 'center' }}>
+                <Text
+                  style={{
+                    color: colors.textMuted,
+                    fontFamily: typography.family.regular,
+                    fontSize: typography.size.md,
+                    textAlign: 'center',
+                  }}
+                >
+                  Unable to load favourites.
+                </Text>
+                <Button label="Retry" onPress={() => favouritesQuery.refetch()} fullWidth={false} />
+              </View>
             ) : (
               <Text
                 style={{

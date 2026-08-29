@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AmenityBadge, Icon } from '@/components/ui';
@@ -225,14 +226,8 @@ export default function CafeDetailScreen() {
   );
 }
 
-/**
- * The PDF shows a real map (street name, dropped pin) here. Embedding a live
- * `MapView` needs a native build outside Expo Go, which currently fails on
- * this machine's Xcode against Expo SDK 57's own `expo-modules-jsi` (an
- * open upstream bug — see design.md). This opens the device's Maps app
- * instead, closer to the intent than the Figma Styleguide page's grey
- * placeholder box was.
- */
+/** A small non-interactive map preview centred on the cafe, tapping through
+ * to the device's Maps app for directions/full interaction. */
 function CafeLocationCard({ cafe }: { cafe: Cafe }) {
   const { colors, radii, spacing, typography } = useTheme();
 
@@ -243,26 +238,45 @@ function CafeLocationCard({ cafe }: { cafe: Cafe }) {
       onPress={() => openInMaps(cafe)}
       accessibilityRole="button"
       accessibilityLabel={`Open ${cafe.name} in Maps`}
-      style={[
-        styles.mapCard,
-        {
-          height: MAP_HEIGHT,
-          borderRadius: radii.lg,
-          backgroundColor: colors.placeholder,
-          gap: spacing.sm,
-        },
-      ]}
+      style={[styles.mapCard, { height: MAP_HEIGHT, borderRadius: radii.lg }]}
     >
-      <Icon name="LocationPin" size={28} color={colors.primary} />
-      <Text
-        style={{
-          color: colors.text,
-          fontFamily: typography.family.bold,
-          fontSize: typography.size.md,
+      <MapView
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+        initialRegion={{
+          latitude: cafe.lat,
+          longitude: cafe.lng,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
         }}
       >
-        Open in Maps
-      </Text>
+        <Marker coordinate={{ latitude: cafe.lat, longitude: cafe.lng }} title={cafe.name} />
+      </MapView>
+
+      <View
+        style={[
+          styles.mapCardLabel,
+          {
+            bottom: spacing.sm,
+            left: spacing.sm,
+            right: spacing.sm,
+            borderRadius: radii.md,
+            paddingVertical: spacing.sm,
+            gap: spacing.xs,
+          },
+        ]}
+      >
+        <Icon name="LocationPin" size={16} color={colors.onPrimary} />
+        <Text
+          style={{
+            color: colors.onPrimary,
+            fontFamily: typography.family.bold,
+            fontSize: typography.size.sm,
+          }}
+        >
+          Open in Maps
+        </Text>
+      </View>
     </Pressable>
   );
 }
@@ -316,7 +330,13 @@ const styles = StyleSheet.create({
   },
   mapCard: {
     width: '100%',
+    overflow: 'hidden',
+  },
+  mapCardLabel: {
+    position: 'absolute',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
 });

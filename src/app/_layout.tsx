@@ -39,7 +39,15 @@ function SessionRouter() {
     }
   }, [ready, canEnterApp, isRecovering, segments, router]);
 
-  return <Slot />;
+  // Only once the user is actually in scope (signed in or guest) — mounting
+  // this earlier would request location permission while still on the
+  // splash/auth screens, before the user has even signed up or logged in.
+  return (
+    <>
+      {canEnterApp ? <AppPreloader /> : null}
+      <Slot />
+    </>
+  );
 }
 
 export default function RootLayout() {
@@ -64,7 +72,6 @@ export default function RootLayout() {
           <SessionProvider>
             <FiltersProvider>
               <StatusBar style="dark" />
-              <AppPreloader />
               <SessionRouter />
             </FiltersProvider>
           </SessionProvider>
