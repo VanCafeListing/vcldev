@@ -21,8 +21,11 @@ function SessionRouter() {
   useEffect(() => {
     if (!ready) return;
 
-    const inAuthGroup = segments[0] === '(auth)';
-    const onResetScreen = segments[1] === 'reset-password';
+    // `segments` is typed per-route, so index 1 is absent from the narrowest
+    // variant even though it exists at runtime on nested routes.
+    const path = segments as string[];
+    const inAuthGroup = path[0] === '(auth)';
+    const onResetScreen = path[1] === 'reset-password';
 
     // A password-reset link produces a real session, but the user has to set a
     // new password before going anywhere else — so this case is handled ahead

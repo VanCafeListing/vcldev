@@ -50,6 +50,46 @@ export function CafeCard({ cafe, isFavourited, onPress, onToggleFavourite }: Caf
           <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.placeholder }]} />
         )}
 
+        {cafe.rating != null ? (
+          <View
+            style={[
+              styles.ratingBadge,
+              {
+                top: spacing.sm,
+                right: spacing.sm,
+                borderRadius: radii.pill,
+                paddingHorizontal: spacing.sm,
+                gap: 4,
+              },
+            ]}
+            accessibilityLabel={`Rated ${cafe.rating} out of 5${
+              cafe.user_ratings_total != null ? ` from ${cafe.user_ratings_total} reviews` : ''
+            }`}
+          >
+            <Text style={{ color: '#FFC107', fontSize: typography.size.sm }}>★</Text>
+            <Text
+              style={{
+                color: '#FFFFFF',
+                fontFamily: typography.family.bold,
+                fontSize: typography.size.sm,
+              }}
+            >
+              {cafe.rating.toFixed(1)}
+            </Text>
+            {cafe.user_ratings_total != null ? (
+              <Text
+                style={{
+                  color: 'rgba(255,255,255,0.85)',
+                  fontFamily: typography.family.regular,
+                  fontSize: typography.size.sm,
+                }}
+              >
+                ({cafe.user_ratings_total})
+              </Text>
+            ) : null}
+          </View>
+        ) : null}
+
         <LinearGradient
           colors={[
             'rgba(255,255,255,0)',
@@ -117,6 +157,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  /** Sits over the photo's top-right, above the scrim's reach — hence its own
+   * dark pill rather than relying on the white-to-transparent gradient. */
+  ratingBadge: {
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 3,
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
   footer: {
     position: 'absolute',

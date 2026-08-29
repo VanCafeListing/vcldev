@@ -29,13 +29,21 @@ export type Cafe = {
   atmosphere_lively: boolean;
   lat: number | null;
   lng: number | null;
+  /** Google Places fields, synced by `scripts/sync-places.mjs`. */
+  google_place_id: string | null;
+  rating: number | null;
+  user_ratings_total: number | null;
+  website: string | null;
+  phone: string | null;
   distance_meters?: number;
 };
 
-const CAFE_COLUMNS =
+/** Shared by every cafe-shaped select so no caller's column list can drift. */
+export const CAFE_COLUMNS =
   'id, name, description, address, photo_url, price_range, wifi, outlets, seat_count, ' +
   'commuter_friendly, parking, seating_spacious, seating_wide_tables, seating_patio, ' +
-  'atmosphere_quiet, atmosphere_lively, lat, lng';
+  'atmosphere_quiet, atmosphere_lively, lat, lng, google_place_id, rating, ' +
+  'user_ratings_total, website, phone';
 
 /** Nearest-first, via the `cafes_nearby` RPC — requires a resolved location. */
 export async function getNearbyCafes(

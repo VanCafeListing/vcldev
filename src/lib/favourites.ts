@@ -4,12 +4,7 @@ import { useRouter } from 'expo-router';
 import { promptGuestToSignIn } from './guest-favourite-prompt';
 import { supabase } from './supabase';
 import { useSession } from './session';
-import type { Cafe } from './cafes';
-
-const CAFE_COLUMNS =
-  'id, name, description, address, photo_url, price_range, wifi, outlets, seat_count, ' +
-  'commuter_friendly, parking, seating_spacious, seating_wide_tables, seating_patio, ' +
-  'atmosphere_quiet, atmosphere_lively, lat, lng';
+import { CAFE_COLUMNS, type Cafe } from './cafes';
 
 /**
  * Every screen that shows a heart icon reads from this one query key, so

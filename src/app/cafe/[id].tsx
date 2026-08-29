@@ -143,6 +143,32 @@ export default function CafeDetailScreen() {
             </View>
           ) : null}
 
+          {cafe.rating != null ? (
+            <View style={[styles.addressRow, { gap: spacing.xs, marginTop: spacing.sm }]}>
+              <Text style={{ color: '#FFC107', fontSize: typography.size.md }}>★</Text>
+              <Text
+                style={{
+                  color: colors.text,
+                  fontFamily: typography.family.bold,
+                  fontSize: typography.size.md,
+                }}
+              >
+                {cafe.rating.toFixed(1)}
+              </Text>
+              {cafe.user_ratings_total != null ? (
+                <Text
+                  style={{
+                    color: colors.textMuted,
+                    fontFamily: typography.family.regular,
+                    fontSize: typography.size.md,
+                  }}
+                >
+                  ({cafe.user_ratings_total.toLocaleString()} Google reviews)
+                </Text>
+              ) : null}
+            </View>
+          ) : null}
+
           {cafe.distance_meters != null ? (
             <View style={[styles.distanceBadgeRow, { marginTop: spacing.md }]}>
               <View
@@ -207,6 +233,29 @@ export default function CafeDetailScreen() {
             />
           </View>
 
+          {cafe.phone || cafe.website ? (
+            <View style={{ marginTop: spacing.xl, gap: spacing.sm }}>
+              {cafe.phone ? (
+                <ContactRow
+                  label={cafe.phone}
+                  accessibilityLabel={`Call ${cafe.name}`}
+                  onPress={() =>
+                    Linking.openURL(`tel:${cafe.phone!.replace(/[^\d+]/g, '')}`).catch(
+                      () => undefined
+                    )
+                  }
+                />
+              ) : null}
+              {cafe.website ? (
+                <ContactRow
+                  label={cafe.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                  accessibilityLabel={`Open ${cafe.name}'s website`}
+                  onPress={() => Linking.openURL(cafe.website!).catch(() => undefined)}
+                />
+              ) : null}
+            </View>
+          ) : null}
+
           <Text
             style={{
               color: colors.text,
@@ -223,6 +272,33 @@ export default function CafeDetailScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+/** A tappable phone/website line, styled as a link. */
+function ContactRow({
+  label,
+  accessibilityLabel,
+  onPress,
+}: {
+  label: string;
+  accessibilityLabel: string;
+  onPress: () => void;
+}) {
+  const { colors, typography } = useTheme();
+
+  return (
+    <Pressable onPress={onPress} accessibilityRole="link" accessibilityLabel={accessibilityLabel}>
+      <Text
+        style={{
+          color: colors.primary,
+          fontFamily: typography.family.regular,
+          fontSize: typography.size.md,
+        }}
+      >
+        {label}
+      </Text>
+    </Pressable>
   );
 }
 
