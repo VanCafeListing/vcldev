@@ -114,7 +114,7 @@ export default function ProfileScreen() {
       key: 'terms',
       label: 'Terms of Use',
       icon: 'Terms',
-      onPress: () => router.push('/profile/terms'),
+      onPress: () => router.push('/legal/terms'),
       showChevron: true,
     },
     {

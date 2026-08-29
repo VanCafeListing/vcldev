@@ -203,7 +203,20 @@ export default function SignUpScreen() {
             >
               <Text style={label}>
                 I agree to the{' '}
-                <Text style={{ color: colors.primary, fontFamily: typography.family.bold }}>
+                <Text
+                  // `push`, so returning keeps this part-filled form intact.
+                  // Reading the terms must not itself count as accepting them,
+                  // so this only opens the document — the checkbox is still a
+                  // separate, deliberate tap.
+                  onPress={() => router.push('/legal/terms')}
+                  accessibilityRole="link"
+                  accessibilityLabel="Read the Terms of Service"
+                  style={{
+                    color: colors.primary,
+                    fontFamily: typography.family.bold,
+                    textDecorationLine: 'underline',
+                  }}
+                >
                   Terms of Service
                 </Text>
               </Text>

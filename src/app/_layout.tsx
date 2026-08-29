@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Slot, useRouter, useSegments } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -27,6 +27,13 @@ function SessionRouter() {
     const inAuthGroup = path[0] === '(auth)';
     const onResetScreen = path[1] === 'reset-password';
 
+    // Legal documents sit outside the auth boundary: they must open for a
+    // signed-out user reading the terms from Sign Up (who would otherwise be
+    // thrown back to the splash mid-signup) AND for a signed-in user opening
+    // them from the Profile tab (who would otherwise be thrown into the tabs).
+    // Both redirects below therefore skip this segment.
+    if (path[0] === 'legal') return;
+
     // A password-reset link produces a real session, but the user has to set a
     // new password before going anywhere else — so this case is handled ahead
     // of the ordinary signed-in routing below.
@@ -45,10 +52,16 @@ function SessionRouter() {
   // Only once the user is actually in scope (signed in or guest) — mounting
   // this earlier would request location permission while still on the
   // splash/auth screens, before the user has even signed up or logged in.
+  // A Stack, not a Slot: `Slot` renders one root-level route at a time with no
+  // stack of its own, so navigating from `(auth)/sign-up` to a sibling route
+  // (e.g. the legal documents) unmounted the whole `(auth)` Stack — going back
+  // remounted it at its initial route and dumped the user on the splash with a
+  // part-filled Sign Up form discarded. A Stack keeps the group mounted
+  // underneath and pops back to exactly where the user left.
   return (
     <>
       {canEnterApp ? <AppPreloader /> : null}
-      <Slot />
+      <Stack screenOptions={{ headerShown: false }} />
     </>
   );
 }
