@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
 
-type LocationState =
+export type UserLocation =
   | { status: 'loading' }
   | { status: 'granted'; coords: { lat: number; lng: number } }
   | { status: 'denied' };
@@ -11,8 +11,8 @@ type LocationState =
  * outcome here — the Home feed falls back to an unsorted list rather than
  * blocking, so this never surfaces an error state of its own.
  */
-export function useUserLocation(): LocationState {
-  const [state, setState] = useState<LocationState>({ status: 'loading' });
+export function useUserLocation(): UserLocation {
+  const [state, setState] = useState<UserLocation>({ status: 'loading' });
 
   useEffect(() => {
     let active = true;

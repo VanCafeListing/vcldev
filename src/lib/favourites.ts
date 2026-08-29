@@ -27,14 +27,18 @@ async function fetchFavouriteCafeIds(userId: string): Promise<Set<string>> {
   return new Set((data ?? []).map((row) => row.cafe_id));
 }
 
+/** Query options for the id-only favourites cache — shared with the preloader. */
+export function favouritesQueryOptions(userId: string) {
+  return { queryKey: favouritesKey(userId), queryFn: () => fetchFavouriteCafeIds(userId) };
+}
+
 /** The current user's favourited cafe ids. Empty (and disabled) for guests. */
 export function useFavouriteIds() {
   const { session } = useSession();
   const userId = session?.user.id;
 
   return useQuery({
-    queryKey: favouritesKey(userId),
-    queryFn: () => fetchFavouriteCafeIds(userId as string),
+    ...favouritesQueryOptions(userId as string),
     enabled: Boolean(userId),
   });
 }
@@ -49,14 +53,18 @@ async function getFavouritedCafes(userId: string): Promise<Cafe[]> {
   return ((data ?? []) as unknown as { cafe: Cafe }[]).map((row) => row.cafe);
 }
 
+/** Query options for the Favourites screen's full-card cache — shared with the preloader. */
+export function favouritedCafesQueryOptions(userId: string) {
+  return { queryKey: favouritedCafesKey(userId), queryFn: () => getFavouritedCafes(userId) };
+}
+
 /** The Favourites screen's list. Empty (and disabled) for guests. */
 export function useFavouritedCafes() {
   const { session } = useSession();
   const userId = session?.user.id;
 
   return useQuery({
-    queryKey: favouritedCafesKey(userId),
-    queryFn: () => getFavouritedCafes(userId as string),
+    ...favouritedCafesQueryOptions(userId as string),
     enabled: Boolean(userId),
   });
 }

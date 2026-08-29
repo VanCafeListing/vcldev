@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CafeCard } from '@/components/cafe-card';
 import { Icon } from '@/components/ui';
-import { getCafesFallback, getNearbyCafes } from '@/lib/cafes';
+import { cafesQueryOptions } from '@/lib/cafes';
 import { getFirstName } from '@/lib/display-name';
 import { useFavouriteAction } from '@/lib/favourites';
 import { useFilters } from '@/lib/filters-context';
@@ -23,15 +23,7 @@ export default function HomeScreen() {
   const { criteria, isActive } = useFilters();
 
   const cafesQuery = useQuery({
-    queryKey: [
-      'cafes',
-      location.status === 'granted' ? location.coords : 'fallback',
-      criteria,
-    ],
-    queryFn: () =>
-      location.status === 'granted'
-        ? getNearbyCafes(location.coords.lat, location.coords.lng, criteria)
-        : getCafesFallback(criteria),
+    ...cafesQueryOptions(location, criteria),
     enabled: location.status !== 'loading',
   });
 

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker, type Region } from 'react-native-maps';
 
-import { getCafesFallback, getNearbyCafes } from '@/lib/cafes';
+import { cafesQueryOptions } from '@/lib/cafes';
 import { useFilters } from '@/lib/filters-context';
 import { useUserLocation } from '@/lib/use-user-location';
 import { useTheme } from '@/theme';
@@ -27,15 +27,7 @@ export default function MapScreen() {
   const { colors, radii, spacing, typography } = useTheme();
 
   const cafesQuery = useQuery({
-    queryKey: [
-      'cafes',
-      location.status === 'granted' ? location.coords : 'fallback',
-      criteria,
-    ],
-    queryFn: () =>
-      location.status === 'granted'
-        ? getNearbyCafes(location.coords.lat, location.coords.lng, criteria)
-        : getCafesFallback(criteria),
+    ...cafesQueryOptions(location, criteria),
     enabled: location.status !== 'loading',
   });
 

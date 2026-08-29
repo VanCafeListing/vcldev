@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AppPreloader } from '@/lib/app-preload';
 import { FiltersProvider } from '@/lib/filters-context';
 import { SessionProvider, useSession } from '@/lib/session';
 import { ThemeProvider } from '@/theme';
@@ -43,7 +44,18 @@ function SessionRouter() {
 
 export default function RootLayout() {
   // One client for the app's lifetime; recreating it on render would drop the cache.
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          // Cafe/favourite data doesn't change from under the user mid-session,
+          // so a screen that already has (prefetched or previously-fetched)
+          // data within this window renders it immediately instead of
+          // refetching-and-flashing a spinner on every mount/tab switch.
+          queries: { staleTime: 2 * 60 * 1000, gcTime: 30 * 60 * 1000 },
+        },
+      })
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -52,6 +64,7 @@ export default function RootLayout() {
           <SessionProvider>
             <FiltersProvider>
               <StatusBar style="dark" />
+              <AppPreloader />
               <SessionRouter />
             </FiltersProvider>
           </SessionProvider>

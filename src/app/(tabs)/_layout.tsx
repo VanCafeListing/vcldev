@@ -11,7 +11,10 @@ import { BottomNavBar, NAV_ITEMS } from '@/components/ui';
 export default function TabsLayout() {
   return (
     <Tabs
-      screenOptions={{ headerShown: false }}
+      // Mount every tab up front rather than on first visit — the app assumes
+      // a user who opens it is about to check the Map (and the others), so
+      // there's no spinner on first tap of any tab.
+      screenOptions={{ headerShown: false, lazy: false }}
       tabBar={({ state, navigation }) => (
         <BottomNavBar
           activeKey={state.routes[state.index]?.name ?? 'index'}

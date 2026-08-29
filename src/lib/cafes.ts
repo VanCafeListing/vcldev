@@ -1,5 +1,6 @@
 import { applyCriteriaToQuery, criteriaToRpcParams, type FilterCriteria } from './filters';
 import { supabase } from './supabase';
+import type { UserLocation } from './use-user-location';
 
 /**
  * A cafe as returned by both `getNearbyCafes` and `getCafesFallback` — the
@@ -58,6 +59,26 @@ export async function getCafesFallback(criteria?: FilterCriteria): Promise<Cafe[
   const { data, error } = await query.order('name');
   if (error) throw error;
   return (data ?? []) as unknown as Cafe[];
+}
+
+/**
+ * Home and Map read the exact same cafe list, so they (and the preloader)
+ * build the query from this one place — a key/queryFn built separately in
+ * each screen would silently stop sharing a cache entry the moment either
+ * one drifted from the other.
+ */
+export function cafesQueryOptions(location: UserLocation, criteria?: FilterCriteria) {
+  return {
+    queryKey: [
+      'cafes',
+      location.status === 'granted' ? location.coords : 'fallback',
+      criteria,
+    ] as const,
+    queryFn: () =>
+      location.status === 'granted'
+        ? getNearbyCafes(location.coords.lat, location.coords.lng, criteria)
+        : getCafesFallback(criteria),
+  };
 }
 
 export async function getCafeById(id: string): Promise<Cafe | null> {
