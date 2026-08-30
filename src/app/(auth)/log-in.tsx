@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { SocialAuthButtons } from '@/components/social-auth-buttons';
 import { Button, PasswordInput, TextInput } from '@/components/ui';
 import { authErrorMessage } from '@/lib/auth-errors';
 import { signInWithIdentifier } from '@/lib/sign-in';
@@ -23,10 +24,13 @@ const EMPTY: LogInFields = { identifier: '', password: '' };
 /**
  * Log In — the "Welcome back!" screen.
  *
- * Note it deliberately carries NO social sign-in buttons: the design puts
- * those on Sign Up only. The identifier accepts a username or an email, which
- * is why signing in goes through the `sign-in` Edge Function rather than
- * calling Supabase directly.
+ * The identifier accepts a username or an email, which is why signing in goes
+ * through the `sign-in` Edge Function rather than calling Supabase directly.
+ *
+ * Social sign-in is here by user directive, not from the design — the PDF
+ * draws those buttons on Sign Up only. They are the same OAuth flows: a
+ * provider returns an existing account's session, or creates one on first use,
+ * so this screen and Sign Up converge on the same result.
  */
 export default function LogInScreen() {
   const { colors, spacing, typography } = useTheme();
@@ -156,6 +160,18 @@ export default function LogInScreen() {
                 Forgot your password?
               </Text>
             </Pressable>
+
+            <SocialAuthButtons
+              disabled={submitting}
+              onStart={() => {
+                // Clear a stale password error so a failed password attempt
+                // doesn't sit under a provider flow that has nothing to do
+                // with it.
+                setFormError(null);
+                return true;
+              }}
+              onError={(error) => setFormError(authErrorMessage(error))}
+            />
 
             <Pressable
               onPress={() => router.replace('/(auth)/sign-up')}

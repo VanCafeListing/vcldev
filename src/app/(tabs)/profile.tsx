@@ -88,6 +88,43 @@ export default function ProfileScreen() {
               />
             </View>
           )}
+
+          {/* Reachable without an account: someone deciding whether to sign up
+              needs to read these first, and a guest is already bound by them. */}
+          <View style={[styles.legalRow, { gap: spacing.lg, marginTop: spacing.md }]}>
+            <Pressable
+              onPress={() => router.push('/legal/terms')}
+              accessibilityRole="link"
+              accessibilityLabel="Read the Terms of Use"
+              hitSlop={8}
+            >
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontFamily: typography.family.regular,
+                  fontSize: typography.size.sm,
+                }}
+              >
+                Terms of Use
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => router.push('/legal/privacy')}
+              accessibilityRole="link"
+              accessibilityLabel="Read the Privacy Policy"
+              hitSlop={8}
+            >
+              <Text
+                style={{
+                  color: colors.primary,
+                  fontFamily: typography.family.regular,
+                  fontSize: typography.size.sm,
+                }}
+              >
+                Privacy Policy
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </SafeAreaView>
     );
@@ -107,7 +144,7 @@ export default function ProfileScreen() {
       key: 'privacy',
       label: 'Privacy Policy',
       icon: 'Privacy',
-      onPress: () => router.push('/profile/privacy'),
+      onPress: () => router.push('/legal/privacy'),
       showChevron: true,
     },
     {
@@ -246,6 +283,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   centered: { alignItems: 'center', justifyContent: 'center' },
+  legalRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   avatar: {
     width: 96,
     height: 96,

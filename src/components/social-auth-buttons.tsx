@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { signInWithApple, signInWithWebProvider, type WebOAuthProvider } from '@/lib/social-auth';
 import { useTheme } from '@/theme';
@@ -17,6 +17,14 @@ const ICONS = {
 } as const;
 
 type SocialProvider = 'apple' | WebOAuthProvider;
+
+/**
+ * `signInWithApple` throws outright off iOS, so offering the button on Android
+ * would only ever produce an error. Apple requires the option on iOS when
+ * other social logins are present, so it stays there.
+ */
+const PROVIDERS: readonly SocialProvider[] =
+  Platform.OS === 'ios' ? (['apple', 'google', 'facebook'] as const) : (['google', 'facebook'] as const);
 
 type Props = {
   disabled?: boolean;
@@ -60,7 +68,7 @@ export function SocialAuthButtons({ disabled = false, onStart, onError }: Props)
       </View>
 
       <View style={styles.buttons}>
-        {(['apple', 'google', 'facebook'] as const).map((provider) => (
+        {PROVIDERS.map((provider) => (
           <Pressable
             key={provider}
             accessibilityRole="button"
