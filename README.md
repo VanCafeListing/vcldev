@@ -70,8 +70,8 @@ The client uses the Supabase public URL and anon key. Postgres row-level securit
 - Node.js and npm
 - Android Studio with an emulator, or Xcode with an iOS simulator
 - A Supabase project
-- A Google Maps Android API key for Android map tiles
 - The Supabase CLI, if you will apply migrations or deploy Edge Functions locally
+- (Optional) A Google Maps Android API key — only needed for Google map tiles on Android; iOS uses Apple Maps and works without it
 
 ### Install
 
@@ -87,10 +87,11 @@ Add these values to `.env`:
 ```dotenv
 EXPO_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-GOOGLE_MAPS_ANDROID_API_KEY=your-google-maps-android-key
+# leave blank if you don't have one — required only for Android Google maps
+GOOGLE_MAPS_ANDROID_API_KEY=
 ```
 
-The Supabase anon key is public client configuration. Never place the Supabase service-role key or OAuth client secrets in `.env`.
+The Supabase anon key is public client configuration. Never place the Supabase service-role key or OAuth client secrets in `.env`. `GOOGLE_MAPS_ANDROID_API_KEY` is optional: `app.config.js` will warn and skip the native `react-native-maps` setup when it is blank, so the app still starts (iOS uses Apple Maps). No need to change `import ... from 'react-native-maps'` in `src/app/(tabs)/map.tsx` or `src/app/cafe/[id].tsx`.
 
 ### Configure Supabase
 
