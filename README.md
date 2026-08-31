@@ -71,6 +71,7 @@ The client uses the Supabase public URL and anon key. Postgres row-level securit
 - Android Studio with an emulator, or Xcode with an iOS simulator
 - A Supabase project
 - A Google Maps Android API key for Android map tiles
+- The Supabase CLI, if you will apply migrations or deploy Edge Functions locally
 
 ### Install
 
@@ -91,6 +92,35 @@ GOOGLE_MAPS_ANDROID_API_KEY=your-google-maps-android-key
 
 The Supabase anon key is public client configuration. Never place the Supabase service-role key or OAuth client secrets in `.env`.
 
+### Configure Supabase
+
+The app expects the database schema, row-level security policies, seed cafe data, and storage buckets from this repository.
+
+From the repository root, link the project and apply the migrations:
+
+```bash
+supabase login
+supabase link --project-ref your-project-ref
+supabase db push
+```
+
+Deploy the protected account functions:
+
+```bash
+supabase functions deploy sign-in
+supabase functions deploy delete-account
+```
+
+Create the `avatars` and `cafe-photos` Storage buckets in the Supabase dashboard. Keep the bucket access rules consistent with the policies in `supabase/migrations/`.
+
+Configure the authentication providers that the team will test in the Supabase dashboard. Add this redirect URL under Authentication settings:
+
+```text
+vancafelisting://auth/callback
+```
+
+Google and Apple sign-in also require their provider credentials. Apple sign-in requires an Apple Developer account.
+
 ### Run
 
 ```bash
@@ -103,6 +133,10 @@ npm run android
 # Build and run the native iOS app
 npm run ios
 ```
+
+The Android and iOS directories are generated locally and are not committed. The first native run creates the platform project and installs the native dependencies. Android requires an emulator or connected device. iOS requires macOS, Xcode, and CocoaPods.
+
+The Android Maps key must have Maps SDK for Android enabled. Restrict it to the Android application ID `com.vcl.vancafelisting` when you create the key.
 
 The Android application ID and iOS bundle identifier are both `com.vcl.vancafelisting`. The app uses `vancafelisting://` for authentication callbacks and recovery links.
 
